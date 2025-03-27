@@ -1,0 +1,53 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 348px;
+  cursor: pointer;
+  background-color: $card-bg;
+  gap: $space-xl;
+  padding-bottom: $space-xl;
+  border-radius: $border-radius;
+  overflow: hidden;
+  height: 100%;
+}
+
+.card:hover {
+  box-shadow: $shadow;
+}
+
+.header {
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  min-height: 348px;
+  max-height: 360px;
+  width: 100%;
+  background-color: $card-image-bg;
+}
+
+.image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-l;
+  padding: 0 $space-xs;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xxs;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-xxs;
+}

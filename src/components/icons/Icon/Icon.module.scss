@@ -1,0 +1,24 @@
+.icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: inherit;
+}
+
+.primaryIcon {
+  color: $text-primary;
+}
+
+.secondaryIcon {
+  color: $text-secondary;
+}
+
+.accentIcon {
+  color: $text-accent;
+}
+
+.icon svg {
+  height: 100%;
+  width: 100%;
+}

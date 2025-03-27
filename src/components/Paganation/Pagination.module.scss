@@ -1,0 +1,43 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.pages {
+  display: flex;
+}
+
+.page {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid #f7e8d7;
+  background: none;
+  cursor: pointer;
+
+  &.active {
+    background: $brand;
+    color: white;
+    border: 1px solid transparent;
+  }
+}
+
+.arrow {
+  height: 42px;
+  width: 38px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+
+  &.disabled {
+    color: #afadb5;
+    cursor: not-allowed;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}

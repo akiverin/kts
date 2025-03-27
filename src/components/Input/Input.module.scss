@@ -1,0 +1,43 @@
+.inputContainer {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-xxs;
+  height: 52px;
+  border: 1px solid $input-border;
+  background-color: $input-bg;
+  width: 100%;
+  padding: 0 $space-xs;
+  color: $input-text;
+  border-radius: $border-radius;
+}
+
+.inputContainer input {
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  line-height: 20px;
+  height: 52px;
+  width: 100%;
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.inputContainer input::placeholder {
+  color: $input-placeholder;
+}
+
+.inputContainer:has(input[disabled]) {
+  background-color: $input-bg-disabled;
+  border-color: $input-border-disabled;
+  color: $input-text-disabled;
+}
+
+.inputContainer:has(input:focus) {
+  border: 1px solid $input-border-focus;
+  background-color: $input-bg-focus;
+  color: $input-text-focus;
+}

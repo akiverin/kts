@@ -1,0 +1,37 @@
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  background-color: $checkbox-bg;
+  border: 1px solid $checkbox-border;
+  cursor: pointer;
+  padding: 0;
+  color: $checkbox-check;
+}
+
+.button:hover {
+  background-color: $checkbox-bg-hover;
+  border: 1px solid $checkbox-border-hover;
+  color: $checkbox-check-hover;
+}
+
+.input:disabled + .button {
+  background-color: $checkbox-bg-disabled;
+  border: 1px solid $checkbox-border-disabled;
+  color: $checkbox-check-disabled;
+}

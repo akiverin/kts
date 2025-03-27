@@ -1,0 +1,30 @@
+.container {
+  margin: 0 auto;
+  display: flex;
+  width: 100%;
+  gap: 100px;
+}
+
+.section {
+  position: relative;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 273px;
+}
+
+.grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 29px;
+}
+
+.border {
+  position: absolute;
+  top: 0;
+  right: -50px;
+}
