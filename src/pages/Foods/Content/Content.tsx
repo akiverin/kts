@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Content.module.scss';
 import Text from 'components/Text';
 import Input from 'components/Input';
@@ -8,9 +8,12 @@ import Card from 'components/Card';
 import Pagination from 'components/Paganation';
 import Loader from 'components/Loader';
 
-import { Recipe, getPaginatedRecipes } from 'config/api';
 import timeIcon from 'assets/timeIcon.svg';
 import { Link } from 'react-router';
+import { Recipe } from 'entities/recipe/types';
+import { getPaginatedRecipes } from 'entities/recipe/api';
+
+const PAGE_SIZE = 9;
 
 const Content: React.FC = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -23,11 +26,10 @@ const Content: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRecipes = async (page: number) => {
+  const fetchRecipes = useCallback(async (page: number) => {
     try {
       setIsLoading(true);
-      // const data = await getAllRecipes();
-      const { data, pagination } = await getPaginatedRecipes(page, 9);
+      const { data, pagination } = await getPaginatedRecipes(page, PAGE_SIZE);
       setRecipes(data);
       setPagination(pagination);
       setError(null);
@@ -37,11 +39,11 @@ const Content: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchRecipes(1);
-  }, []);
+  }, [fetchRecipes]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -72,37 +74,40 @@ const Content: React.FC = () => {
     }
 
     return (
-      <ul className={styles.foods}>
-        {recipes.map((recipe: Recipe) => (
-          <li key={recipe.documentId} className={styles.food}>
-            <Link to={`/foods/${recipe.documentId}`}>
-              <Card
-                image={recipe.images[0]?.url || ''}
-                title={recipe.name}
-                subtitle={recipe.summary}
-                contentSlot={recipe.calories + ' kcal'}
-                actionSlot={
-                  <Button
-                    onClick={(event) => {
-                      event.preventDefault();
-                    }}
-                  >
-                    Save
-                  </Button>
-                }
-                captionSlot={
-                  <div className={styles.time}>
-                    <img src={timeIcon} alt="icon time" />
-                    <Text color="secondary" weight="medium" view="p-14">
-                      {recipe.preparationTime + ' minutes'}
-                    </Text>
-                  </div>
-                }
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <>
+        <ul className={styles.foods}>
+          {recipes.map((recipe: Recipe) => (
+            <li key={recipe.documentId} className={styles.food}>
+              <Link to={`/foods/${recipe.documentId}`}>
+                <Card
+                  image={recipe.images[0]?.url || ''}
+                  title={recipe.name}
+                  subtitle={recipe.summary}
+                  contentSlot={recipe.calories + ' kcal'}
+                  actionSlot={
+                    <Button
+                      onClick={(event) => {
+                        event.preventDefault();
+                      }}
+                    >
+                      Save
+                    </Button>
+                  }
+                  captionSlot={
+                    <div className={styles.time}>
+                      <img src={timeIcon} alt="icon time" />
+                      <Text color="secondary" weight="medium" view="p-14">
+                        {recipe.preparationTime + ' minutes'}
+                      </Text>
+                    </div>
+                  }
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Pagination currentPage={pagination.page} totalPages={pagination.pageCount} onPageChange={fetchRecipes} />
+      </>
     );
   };
 
@@ -146,7 +151,6 @@ const Content: React.FC = () => {
         </div>
         {renderContent()}
       </div>
-      <Pagination currentPage={pagination.page} totalPages={pagination.pageCount} onPageChange={fetchRecipes} />
     </section>
   );
 };

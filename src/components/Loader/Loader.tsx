@@ -16,7 +16,7 @@ const Loader: React.FC<LoaderProps> = ({ size, className }: LoaderProps) => {
         styles.loader,
         size === 's' && styles.loaderSmall,
         size === 'm' && styles.loaderMedium,
-        className && className,
+        className,
       )}
     >
       <div className={styles.circle}></div>

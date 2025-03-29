@@ -12,6 +12,9 @@
   font-size: 18px;
   line-height: 18px;
   cursor: pointer;
+  transition:
+    background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 }
 
 .button:not(.buttonLoading):hover {

@@ -19,7 +19,7 @@ const Icon: React.FC<React.PropsWithChildren<IconProps>> = ({
 }: IconProps) => {
   return (
     <svg
-      className={classNames(styles.icon, className && className, color && styles[`${color}Icon`])}
+      className={classNames(styles.icon, className, color && styles[`${color}Icon`])}
       width={width || '24'}
       height={height || '24'}
       viewBox="0 0 24 24"

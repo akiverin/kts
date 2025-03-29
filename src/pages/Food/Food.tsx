@@ -1,101 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import styles from './TheFood.module.scss';
+import React, { useCallback, useEffect, useState } from 'react';
+import styles from './Food.module.scss';
 import { Link, useParams } from 'react-router';
 import ArrowLeft from 'components/icons/ArrowLeft';
 import Text from 'components/Text';
-import { getRecipe } from 'config/api';
 import pattern from 'assets/patterg.svg';
 import Summary from './Summary';
 import Ingredients from './Ingredients/Ingredients';
 import Directions from './Directions/Directions';
 import Loader from 'components/Loader';
+import { getRecipeById } from 'entities/recipe/api';
+import { RecipeDetails } from 'entities/recipe/types';
 
-export type FoodDetails = {
-  documentId: string;
+const DETAILS: {
+  key: keyof Pick<RecipeDetails, 'preparationTime' | 'cookingTime' | 'totalTime' | 'likes' | 'servings' | 'rating'>;
   name: string;
-  preparationTime: number;
-  cookingTime: number;
-  totalTime: number;
-  likes: number;
-  servings: number;
-  rating: number;
-  images: Array<{ url: string }>;
-  calories: number;
-  category: {
-    title: string;
-  };
-  directions: Array<{ description: string }>;
-  equipments: Array<{ name: string }>;
-  ingradients: Array<{ name: string }>;
-  summary: string;
-  vegetarian: boolean;
-};
+  formatter?: (value: string) => string;
+}[] = [
+  {
+    key: 'preparationTime',
+    name: 'Preparation',
+    formatter: (value) => `${value} minutes`,
+  },
+  {
+    key: 'cookingTime',
+    name: 'Cooking',
+    formatter: (value) => `${value} minutes`,
+  },
+  {
+    key: 'totalTime',
+    name: 'Total',
+    formatter: (value) => `${value} minutes`,
+  },
+  {
+    key: 'likes',
+    name: 'Likes',
+    formatter: (value) => value.toLocaleString(),
+  },
+  {
+    key: 'servings',
+    name: 'Servings',
+    formatter: (value) => `${value} servings`,
+  },
+  {
+    key: 'rating',
+    name: 'Ratings',
+    formatter: (value) => `${value} / 5`,
+  },
+];
 
-const TheFood: React.FC = () => {
+const Food: React.FC = () => {
   const { documentId } = useParams<{ documentId: string }>();
-  const [food, setFood] = useState<FoodDetails>();
+  const [food, setFood] = useState<RecipeDetails>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const DETAILS: {
-    key: keyof Pick<FoodDetails, 'preparationTime' | 'cookingTime' | 'totalTime' | 'likes' | 'servings' | 'rating'>;
-    name: string;
-    formatter?: (value: string) => string;
-  }[] = [
-    {
-      key: 'preparationTime',
-      name: 'Preparation',
-      formatter: (value) => `${value} minutes`,
-    },
-    {
-      key: 'cookingTime',
-      name: 'Cooking',
-      formatter: (value) => `${value} minutes`,
-    },
-    {
-      key: 'totalTime',
-      name: 'Total',
-      formatter: (value) => `${value} minutes`,
-    },
-    {
-      key: 'likes',
-      name: 'Likes',
-      formatter: (value) => value.toLocaleString(),
-    },
-    {
-      key: 'servings',
-      name: 'Servings',
-      formatter: (value) => `${value} servings`,
-    },
-    {
-      key: 'rating',
-      name: 'Ratings',
-      formatter: (value) => `${value} / 5`,
-    },
-  ];
+  const fetchFood = useCallback(async () => {
+    if (!documentId) {
+      setError('Неверный идентификатор рецепта');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await getRecipeById(documentId);
+      setFood(data);
+      setError(null);
+    } catch (err) {
+      setError('Ошибка при загрузке рецепта.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [documentId]);
 
   useEffect(() => {
-    const fetchFood = async () => {
-      if (!documentId) {
-        setError('Неверный идентификатор рецепта');
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        const data = await getRecipe(documentId);
-        setFood(data);
-        setError(null);
-      } catch (err) {
-        setError('Ошибка при загрузке рецепта.');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchFood();
-  }, [documentId]);
+  }, [fetchFood]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -171,4 +151,4 @@ const TheFood: React.FC = () => {
     </section>
   );
 };
-export default TheFood;
+export default Food;

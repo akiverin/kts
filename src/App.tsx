@@ -1,12 +1,13 @@
-import './App.css';
 import { Outlet } from 'react-router';
-import TheHeader from './components/TheHeader/TheHeader';
+import Header from './components/Header/Header';
 
 function App() {
   return (
     <>
-      <TheHeader />
-      <Outlet />
+      <Header />
+      <main>
+        <Outlet />
+      </main>
     </>
   );
 }

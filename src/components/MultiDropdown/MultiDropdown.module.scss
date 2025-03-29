@@ -11,6 +11,10 @@
   cursor: pointer;
 }
 
+.option p {
+  transition: color 0.15s ease-in-out;
+}
+
 .option:not(.optionSelected):hover p {
   color: $text-secondary;
 }

@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router';
 import App from '../App';
 import Foods from '../pages/Foods';
-import TheFood from '../pages/TheFood';
+import Food from '../pages/Food';
 
 export const routesConfig: RouteObject[] = [
   {
@@ -18,7 +18,7 @@ export const routesConfig: RouteObject[] = [
       },
       {
         path: '/foods/:documentId',
-        element: <TheFood />,
+        element: <Food />,
       },
     ],
   },

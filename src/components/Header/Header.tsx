@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './TheHeader.module.scss';
+import styles from './Header.module.scss';
 import Text from 'components/Text';
 import { Link } from 'react-router';
 
-const TheHeader = () => {
+const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
@@ -120,4 +120,4 @@ const TheHeader = () => {
   );
 };
 
-export default TheHeader;
+export default Header;

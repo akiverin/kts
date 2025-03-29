@@ -12,7 +12,7 @@
 .page {
   width: 40px;
   height: 40px;
-  border: 1.5px solid #f7e8d7;
+  border: 1.5px solid $pagination-page-border;
   background: none;
   cursor: pointer;
 
@@ -32,7 +32,7 @@
   padding: 8px;
 
   &.disabled {
-    color: #afadb5;
+    color: $pagination-arrow-disabled;
     cursor: not-allowed;
   }
 }

@@ -8,7 +8,9 @@
       "assets": ["assets/*"],
       "config": ["config/*"],
       "styles": ["styles/*"],
-      "utils": ["utils/*"]
+      "utils": ["utils/*"],
+      "types": ["types/*"],
+      "entities": ["entities/*"]
     }
   }
 }

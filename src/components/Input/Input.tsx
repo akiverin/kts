@@ -26,7 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
           {...props}
         />
-        {afterSlot && afterSlot}
+        {afterSlot}
       </div>
     );
   },

@@ -34,7 +34,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({ onChange, disabled, checked, classN
         type="checkbox"
         disabled={disabled}
         checked={internalChecked}
-        className={classNames(styles.visuallyHidden, styles.input)}
+        className={classNames('visuallyHidden', styles.input)}
         onChange={(e) => {
           if (disabled) return;
           const newChecked = e.target.checked;

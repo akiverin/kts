@@ -4,10 +4,10 @@ import Dish from 'components/icons/Dish';
 import Equipment from 'components/icons/Equipment';
 import styles from './Ingredients.module.scss';
 
-type equipmentsT = { equipments: Array<{ name: string }> };
-type ingradientsT = { ingradients: Array<{ name: string }> };
+type EquipmentsT = { equipments: Array<{ name: string }> };
+type IngradientsT = { ingradients: Array<{ name: string }> };
 
-const Ingredients = ({ ingradients, equipments }: equipmentsT & ingradientsT) => {
+const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) => {
   return (
     <div className={styles.container}>
       <div className={styles.section}>

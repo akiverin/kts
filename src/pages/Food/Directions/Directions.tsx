@@ -2,9 +2,9 @@ import React from 'react';
 import Text from 'components/Text';
 import styles from './Directions.module.scss';
 
-type directionsT = { directions: Array<{ description: string }> };
+type DirectionsT = { directions: Array<{ description: string }> };
 
-const Directions = ({ directions }: directionsT) => {
+const Directions = ({ directions }: DirectionsT) => {
   return (
     <div className={styles.section}>
       <Text view="p-20" weight="bold">

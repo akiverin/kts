@@ -33,7 +33,7 @@ const Card: React.FC<CardProps> = ({
   onClick,
 }: CardProps) => {
   return (
-    <div onClick={onClick} className={classNames(styles.card, className && className)}>
+    <div onClick={onClick} className={classNames(styles.card, className)}>
       <div className={styles.header}>
         <img src={image} alt="image card" className={styles.image} />
       </div>
