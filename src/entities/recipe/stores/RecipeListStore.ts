@@ -9,15 +9,41 @@ export class RecipeListStore {
   pagination: Pagination = { page: 1, pageSize: 9, pageCount: 1, total: 0 };
   meta: Meta = Meta.initial;
   error: string = '';
+  searchQuery: string = '';
+  selectedCategory: number | null = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
+  setSearchQuery(query: string) {
+    this.searchQuery = query;
+  }
+
+  setSelectedCategory(categoryId: number | null) {
+    this.selectedCategory = categoryId;
+  }
+
   async fetchRecipes(page: number) {
     this.meta = Meta.loading;
     try {
-      const { data, pagination } = await getPaginatedRecipes(page, this.pagination.pageSize);
+      const filters: Record<string, { [key: string]: unknown }> = {};
+      if (this.searchQuery) {
+        filters.name = { $containsi: this.searchQuery };
+      }
+      if (this.selectedCategory !== null) {
+        filters.category = {
+          id: {
+            $eq: this.selectedCategory,
+          },
+        };
+      }
+
+      const { data, pagination } = await getPaginatedRecipes(
+        page,
+        this.pagination.pageSize,
+        filters as unknown as Record<string, string | number | boolean | null>,
+      );
       runInAction(() => {
         this.recipes = data;
         this.pagination = pagination;
