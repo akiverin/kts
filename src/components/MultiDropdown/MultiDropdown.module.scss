@@ -1,9 +1,17 @@
+.dropdown {
+  position: relative;
+}
+
 .menu {
+  position: absolute;
   background-color: $dropdown-options-bg;
   width: 100%;
   box-shadow: $shadow;
+  top: 52px;
   margin-top: $space-xxs;
   border-radius: $border-radius;
+  max-height: 360px;
+  overflow: scroll;
 }
 
 .option {

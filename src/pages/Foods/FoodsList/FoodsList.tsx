@@ -1,37 +1,65 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './FoodsList.module.scss';
 import Text from 'components/Text';
 import Button from 'components/Button';
-import MultiDropdown from 'components/MultiDropdown';
 import Card from 'components/Card';
 import Pagination from 'components/Paganation';
 import Loader from 'components/Loader';
-
 import timeIcon from 'assets/timeIcon.svg';
 import { Link } from 'react-router';
 import { Recipe } from 'entities/recipe/types';
 import { RecipeListStore } from 'entities/recipe/stores/RecipeListStore';
+import { CategoryStore } from 'entities/category/stores/CategoryStore';
 import { observer } from 'mobx-react-lite';
 import { Meta } from 'utils/meta';
 import SearchBar from './SearchBar';
+import DropdownCategory from './DropdownCategory';
+import { OptionT } from 'components/MultiDropdown';
 
 const recipeListStore = new RecipeListStore();
+const categoryStore = new CategoryStore();
 
 const FoodsList: React.FC = observer(() => {
   const [localSearch, setLocalSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const fetchRecipes = useCallback((page: number) => {
     recipeListStore.fetchRecipes(page);
+  }, []);
+
+  const fetchCategories = useCallback(() => {
+    categoryStore.fetchCategories();
   }, []);
 
   useEffect(() => {
     fetchRecipes(1);
   }, [fetchRecipes]);
 
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   const onSearch = () => {
     recipeListStore.setSearchQuery(localSearch);
     fetchRecipes(1);
   };
+
+  const handleCategoryChange = (value: OptionT | OptionT[]) => {
+    const categoryIds = Array.isArray(value) ? value.map((option) => Number(option.key)) : [Number(value.key)];
+    const newCategory = categoryIds.length > 0 ? categoryIds[0] : null;
+    setSelectedCategory(newCategory);
+    recipeListStore.setSelectedCategory(newCategory);
+    fetchRecipes(1);
+  };
+
+  const getCategoryOption = (id: number | null) =>
+    id !== null ? categoryStore.asOptions.find((opt) => opt.key === id.toString()) || null : null;
+
+  const selectedOption = useMemo(
+    () => getCategoryOption(selectedCategory),
+    [selectedCategory, categoryStore.asOptions],
+  );
+  const categoryOptions = useMemo(() => categoryStore.asOptions, [categoryStore.asOptions]);
 
   const renderContent = () => {
     if (recipeListStore.meta === Meta.loading) {
@@ -111,18 +139,14 @@ const FoodsList: React.FC = observer(() => {
           <u>holiday feasts</u>.
         </Text>
         <div className={styles.actions}>
-          <SearchBar value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
-          <div className={styles.dropdown}>
-            <MultiDropdown
-              options={[]}
-              value={[]}
-              placeholder="Categories"
-              getTitle={() => {
-                return 'Categories';
-              }}
-              onChange={() => {}}
-            />
-          </div>
+          <SearchBar placeholder="Enter dishes" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
+          <DropdownCategory
+            placeholder="Categories"
+            options={categoryOptions}
+            value={selectedOption ? [selectedOption] : []}
+            onChange={handleCategoryChange}
+            getTitle={(values) => values[0]?.value || 'Categories'}
+          />
         </div>
         {renderContent()}
       </div>

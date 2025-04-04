@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import Text from '../Text';
 import ArrowDownIcon from '../icons/ArrowDownIcon';
 
-export type Option = {
+export type OptionT = {
   /** Ключ варианта, используется для отправки на бек/использования в коде */
   key: string;
   /** Значение варианта, отображается пользователю */
@@ -16,15 +16,15 @@ export type Option = {
 export type MultiDropdownProps = {
   className?: string;
   /** Массив возможных вариантов для выбора */
-  options: Option[];
+  options: OptionT[];
   /** Текущие выбранные значения поля, может быть пустым */
-  value: Option[];
+  value: OptionT[];
   /** Callback, вызываемый при выборе варианта */
-  onChange: (value: Option[]) => void;
+  onChange: (value: OptionT[] | OptionT) => void;
   /** Заблокирован ли дропдаун */
   disabled?: boolean;
   /** Возвращает строку которая будет выводится в инпуте. В случае если опции не выбраны, строка должна отображаться как placeholder. */
-  getTitle: (value: Option[]) => string;
+  getTitle: (value: OptionT[]) => string;
 
   placeholder?: string;
 };
@@ -42,6 +42,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
   const [filterText, setFilterText] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,12 +73,13 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
     }
   };
 
-  const handleOptionClick = (option: Option) => {
+  const handleOptionClick = (option: OptionT) => {
     const isSelected = value.some((item) => item.key === option.key);
+    setIsOpen(false);
     if (isSelected) {
       onChange(value.filter((item) => item.key !== option.key));
     } else {
-      onChange([...value, option]);
+      onChange([option]);
     }
   };
 
@@ -102,13 +104,13 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
       </div>
 
       {isOpen && !disabled && (
-        <div className={styles.menu}>
-          {filteredOptions.map((option: Option) => (
+        <div ref={menuRef} className={styles.menu}>
+          {filteredOptions.map((option: OptionT) => (
             <div
               key={option.key}
               className={classNames(
                 styles.option,
-                value.some((v: Option) => v.key === option.key) && styles.optionSelect,
+                value.some((v: OptionT) => v.key === option.key) && styles.optionSelect,
               )}
               onClick={() => handleOptionClick(option)}
             >

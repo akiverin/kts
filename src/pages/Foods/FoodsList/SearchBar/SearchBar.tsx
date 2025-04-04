@@ -12,7 +12,7 @@ const SearchBar = ({ onSearch, ...props }: InputProps & { onSearch: (value: stri
 
   return (
     <form onSubmit={handleSubmit} role="search" className={styles.search}>
-      <Input placeholder="Enter dishes" {...props} />
+      <Input {...props} />
       <Button type="submit">
         <Search />
       </Button>

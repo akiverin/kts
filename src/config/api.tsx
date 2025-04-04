@@ -1,16 +1,23 @@
 import axios from 'axios';
 import qs from 'qs';
 
-export const API_URL = 'https://front-school-strapi.ktsdev.ru/api/recipes';
+export const API_BASE_URL = 'https://front-school-strapi.ktsdev.ru/api';
 
 export const api = axios.create({
-  baseURL: API_URL,
-  paramsSerializer: (params) => qs.stringify(params, { encodeValuesOnly: true }),
+  baseURL: API_BASE_URL,
+  paramsSerializer: (params) =>
+    qs.stringify(params, {
+      encodeValuesOnly: true,
+      arrayFormat: 'brackets',
+    }),
 });
 
 export const apiRoutes = {
   recipes: {
-    getAll: '/',
-    getById: (id: string) => `/${id}`,
+    getAll: '/recipes',
+    getById: (id: string) => `/recipes/${id}`,
+  },
+  categories: {
+    getAll: '/meal-categories',
   },
 };
