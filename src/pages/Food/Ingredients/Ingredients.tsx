@@ -1,13 +1,18 @@
 import React from 'react';
 import Text from 'components/Text';
-import Dish from 'components/icons/Dish';
-import Equipment from 'components/icons/Equipment';
+import DishIcon from 'components/icons/Dish';
+import EquipmentIcon from 'components/icons/Equipment';
 import styles from './Ingredients.module.scss';
 
-type EquipmentsT = { equipments: Array<{ name: string }> };
-type IngradientsT = { ingradients: Array<{ name: string }> };
+type Ingredient = { name: string };
+type Equipment = { name: string };
 
-const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) => {
+type IngredientsProps = {
+  equipment: Equipment[];
+  ingredients: Ingredient[];
+};
+
+const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => {
   return (
     <div className={styles.container}>
       <div className={styles.section}>
@@ -15,9 +20,9 @@ const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) =>
           Ingredients
         </Text>
         <div className={styles.grid}>
-          {ingradients.map((item, index) => (
+          {ingredients.map((item, index) => (
             <div key={index} className={styles.item}>
-              <Dish />
+              <DishIcon />
               <Text view="p-16">{item.name}</Text>
             </div>
           ))}
@@ -43,9 +48,9 @@ const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) =>
           Equipment
         </Text>
         <div className={styles.grid}>
-          {equipments.map((item, index) => (
+          {equipment.map((item, index) => (
             <div key={index} className={styles.item}>
-              <Equipment />
+              <EquipmentIcon />
               <Text view="p-16">{item.name}</Text>
             </div>
           ))}

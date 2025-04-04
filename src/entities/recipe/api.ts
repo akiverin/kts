@@ -27,11 +27,13 @@ export const getRecipeById = async (documentId: string): Promise<RecipeDetails> 
 export const getPaginatedRecipes = async (
   page: number,
   pageSize: number,
+  filters?: Record<string, string | number | boolean | null>,
 ): Promise<{ data: Recipe[]; pagination: Pagination }> => {
   try {
     const query = qs.stringify(
       {
         populate: ['images'],
+        filters: filters || {},
         pagination: { page, pageSize },
       },
       {

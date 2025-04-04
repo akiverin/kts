@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import styles from './Content.module.scss';
+import React, { useEffect } from 'react';
+import styles from './FoodsList.module.scss';
 import Text from 'components/Text';
 import Input from 'components/Input';
 import Button from 'components/Button';
@@ -11,42 +11,19 @@ import Loader from 'components/Loader';
 import timeIcon from 'assets/timeIcon.svg';
 import { Link } from 'react-router';
 import { Recipe } from 'entities/recipe/types';
-import { getPaginatedRecipes } from 'entities/recipe/api';
+import { RecipeListStore } from 'entities/recipe/stores/RecipeListStore';
+import { observer } from 'mobx-react-lite';
+import { Meta } from 'utils/meta';
 
-const PAGE_SIZE = 9;
+const recipeListStore = new RecipeListStore();
 
-const Content: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    pageSize: 9,
-    pageCount: 1,
-    total: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchRecipes = useCallback(async (page: number) => {
-    try {
-      setIsLoading(true);
-      const { data, pagination } = await getPaginatedRecipes(page, PAGE_SIZE);
-      setRecipes(data);
-      setPagination(pagination);
-      setError(null);
-    } catch (err) {
-      setError('Error loading foods');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+const FoodsList: React.FC = observer(() => {
+  useEffect(() => {
+    recipeListStore.fetchRecipes(1);
   }, []);
 
-  useEffect(() => {
-    fetchRecipes(1);
-  }, [fetchRecipes]);
-
   const renderContent = () => {
-    if (isLoading) {
+    if (recipeListStore.meta === Meta.loading) {
       return (
         <>
           <Text view="title" weight="bold">
@@ -57,18 +34,18 @@ const Content: React.FC = () => {
       );
     }
 
-    if (error) {
+    if (recipeListStore.meta === Meta.error) {
       return (
         <Text view="title" weight="bold">
-          {error}
+          {recipeListStore.error}
         </Text>
       );
     }
 
-    if (recipes.length === 0) {
+    if (recipeListStore.recipes.length === 0) {
       return (
         <Text view="title" weight="bold">
-          List of foods not found!
+          List of recipes not found!
         </Text>
       );
     }
@@ -76,7 +53,7 @@ const Content: React.FC = () => {
     return (
       <>
         <ul className={styles.foods}>
-          {recipes.map((recipe: Recipe) => (
+          {recipeListStore.recipes.map((recipe: Recipe) => (
             <li key={recipe.documentId} className={styles.food}>
               <Link to={`/foods/${recipe.documentId}`}>
                 <Card
@@ -106,7 +83,11 @@ const Content: React.FC = () => {
             </li>
           ))}
         </ul>
-        <Pagination currentPage={pagination.page} totalPages={pagination.pageCount} onPageChange={fetchRecipes} />
+        <Pagination
+          currentPage={recipeListStore.pagination.page}
+          totalPages={recipeListStore.pagination.pageCount}
+          onPageChange={(page: number) => recipeListStore.fetchRecipes(page)}
+        />
       </>
     );
   };
@@ -153,6 +134,6 @@ const Content: React.FC = () => {
       </div>
     </section>
   );
-};
+});
 
-export default Content;
+export default FoodsList;
