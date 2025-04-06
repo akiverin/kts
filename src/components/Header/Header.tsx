@@ -2,8 +2,10 @@ import React from 'react';
 import styles from './Header.module.scss';
 import Text from 'components/Text';
 import { Link } from 'react-router';
+import { useLocation } from 'react-router';
 
 const Header = () => {
+  const location = useLocation();
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
@@ -53,14 +55,24 @@ const Header = () => {
             <ul className={styles.navList}>
               <li className={styles.navItem}>
                 <Link className={styles.link} to="/">
-                  <Text view="p-16" color="accent" weight="bold">
+                  <Text
+                    view="p-16"
+                    color={location.pathname == '/' ? 'accent' : 'primary'}
+                    weight={location.pathname == '/' ? 'bold' : 'normal'}
+                  >
                     Recipes
                   </Text>
                 </Link>
               </li>
               <li className={styles.navItem}>
-                <Link className={styles.link} to="/">
-                  <Text view="p-16">Meals Categories</Text>
+                <Link className={styles.link} to="/categories">
+                  <Text
+                    view="p-16"
+                    color={location.pathname == '/categories' ? 'accent' : 'primary'}
+                    weight={location.pathname == '/categories' ? 'bold' : 'normal'}
+                  >
+                    Meals Categories
+                  </Text>
                 </Link>
               </li>
               <li className={styles.navItem}>

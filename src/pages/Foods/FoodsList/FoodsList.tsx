@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './FoodsList.module.scss';
 import Text from 'components/Text';
 import Button from 'components/Button';
@@ -6,13 +6,13 @@ import Card from 'components/Card';
 import Pagination from 'components/Paganation';
 import Loader from 'components/Loader';
 import timeIcon from 'assets/timeIcon.svg';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Recipe } from 'entities/recipe/types';
 import { RecipeListStore } from 'entities/recipe/stores/RecipeListStore';
 import { CategoryStore } from 'entities/category/stores/CategoryStore';
 import { observer } from 'mobx-react-lite';
 import { Meta } from 'utils/meta';
-import SearchBar from './SearchBar';
+import SearchBar from 'components/SearchBar';
 import DropdownCategory from './DropdownCategory';
 import { OptionT } from 'components/MultiDropdown';
 
@@ -20,45 +20,73 @@ const recipeListStore = new RecipeListStore();
 const categoryStore = new CategoryStore();
 
 const FoodsList: React.FC = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [localSearch, setLocalSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
-  const fetchRecipes = useCallback((page: number) => {
-    recipeListStore.fetchRecipes(page);
-  }, []);
+  useEffect(() => {
+    const search = searchParams.get('search') || '';
+    const category = searchParams.get('category');
+    const page = parseInt(searchParams.get('page') || '1', 10);
 
-  const fetchCategories = useCallback(() => {
+    setLocalSearch(search);
+    recipeListStore.setSearchQuery(search);
+
+    if (category) {
+      const categoryId = parseInt(category, 10);
+      setSelectedCategory(categoryId);
+      recipeListStore.setSelectedCategory(categoryId);
+    } else {
+      setSelectedCategory(null);
+      recipeListStore.setSelectedCategory(null);
+    }
+
+    recipeListStore.fetchRecipes(page);
+  }, [searchParams]);
+
+  useEffect(() => {
     categoryStore.fetchCategories();
   }, []);
 
-  useEffect(() => {
-    fetchRecipes(1);
-  }, [fetchRecipes]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
   const onSearch = () => {
-    recipeListStore.setSearchQuery(localSearch);
-    fetchRecipes(1);
+    const updatedParams: Record<string, string> = {
+      ...Object.fromEntries(searchParams.entries()),
+      search: localSearch,
+      page: '1',
+    };
+    setSearchParams(updatedParams);
   };
 
   const handleCategoryChange = (value: OptionT | OptionT[]) => {
-    const categoryIds = Array.isArray(value) ? value.map((option) => Number(option.key)) : [Number(value.key)];
-    const newCategory = categoryIds.length > 0 ? categoryIds[0] : null;
-    setSelectedCategory(newCategory);
-    recipeListStore.setSelectedCategory(newCategory);
-    fetchRecipes(1);
+    const categoryIds = Array.isArray(value) ? value.map((opt) => Number(opt.key)) : [Number(value.key)];
+    const selected = categoryIds[0] ?? null;
+
+    const updatedParams: Record<string, string> = {
+      ...Object.fromEntries(searchParams.entries()),
+      page: '1',
+    };
+
+    if (selected) {
+      updatedParams.category = selected.toString();
+    } else {
+      delete updatedParams.category;
+    }
+
+    setSearchParams(updatedParams);
+  };
+
+  const onPageChange = (page: number) => {
+    const updatedParams = {
+      ...Object.fromEntries(searchParams.entries()),
+      page: page.toString(),
+    };
+    setSearchParams(updatedParams);
   };
 
   const getCategoryOption = (id: number | null) =>
     id !== null ? categoryStore.asOptions.find((opt) => opt.key === id.toString()) || null : null;
 
-  const selectedOption = useMemo(
-    () => getCategoryOption(selectedCategory),
-    [selectedCategory, categoryStore.asOptions],
-  );
+  const selectedOption = useMemo(() => getCategoryOption(selectedCategory), [selectedCategory]);
   const categoryOptions = useMemo(() => categoryStore.asOptions, [categoryStore.asOptions]);
 
   const renderContent = () => {
@@ -125,7 +153,7 @@ const FoodsList: React.FC = observer(() => {
         <Pagination
           currentPage={recipeListStore.pagination.page}
           totalPages={recipeListStore.pagination.pageCount}
-          onPageChange={(page: number) => recipeListStore.fetchRecipes(page)}
+          onPageChange={onPageChange}
         />
       </>
     );
