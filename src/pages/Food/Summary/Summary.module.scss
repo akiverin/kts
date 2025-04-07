@@ -1,8 +1,10 @@
-.text {
-  display: contents;
-}
+.summary {
+  &__text {
+    display: contents;
+  }
 
-.link {
-  color: $text-primary;
-  text-decoration: underline;
+  &__link {
+    color: $text-primary;
+    text-decoration: underline;
+  }
 }

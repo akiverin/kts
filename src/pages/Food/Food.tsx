@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from './Food.module.scss';
-import { Link, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import ArrowLeft from 'components/icons/ArrowLeft';
 import Text from 'components/Text';
 import pattern from 'assets/patterg.svg';
@@ -11,10 +11,12 @@ import Loader from 'components/Loader';
 import { RecipeStore } from 'entities/recipe/stores/RecipeStore';
 import { observer } from 'mobx-react-lite';
 import { Meta } from 'utils/meta';
+import { useNavigate } from 'react-router';
 
 const recipeStore = new RecipeStore();
 
 const Food: React.FC = observer(() => {
+  const navigate = useNavigate();
   const { documentId } = useParams<{ documentId: string }>();
 
   useEffect(() => {
@@ -56,21 +58,21 @@ const Food: React.FC = observer(() => {
 
     return (
       <>
-        <section className={styles.controls}>
-          <Link to="/">
+        <section className={styles.food__controls}>
+          <button className={styles.food__back} onClick={() => navigate(-1)}>
             <ArrowLeft color="accent" height={32} width={32} />
-          </Link>
+          </button>
           <Text view="title" weight="bold">
             {food.name}
           </Text>
         </section>
-        <section className={styles.content}>
-          <div className={styles.info}>
-            <img className={styles.image} src={food.image} alt="image food" />
-            <div className={styles.details}>
-              <ul className={styles.list}>
+        <section className={styles.food__content}>
+          <div className={styles.food__info}>
+            <img className={styles.food__image} src={food.image} alt="image food" />
+            <div className={styles.food__details}>
+              <ul className={styles.food__list}>
                 {details.map((item) => (
-                  <li key={item.label} className={styles.item}>
+                  <li key={item.label} className={styles.food__item}>
                     <Text>{item.label}</Text>
                     <Text color="accent" weight="bold">
                       {item.value}
@@ -80,7 +82,7 @@ const Food: React.FC = observer(() => {
               </ul>
             </div>
           </div>
-          <div className={styles.desc}>
+          <div className={styles.food__desc}>
             <Summary>{food.summary}</Summary>
           </div>
           <Ingredients equipment={food.equipment} ingredients={food.ingredients} />{' '}
@@ -92,8 +94,8 @@ const Food: React.FC = observer(() => {
 
   return (
     <section className={styles.food}>
-      <img className={styles.pattern} src={pattern} alt="decorate pattern" />
-      <div className={styles.wrapper}>{renderContent()}</div>
+      <img className={styles.food__pattern} src={pattern} alt="decorate pattern" />
+      <div className={styles.food__wrapper}>{renderContent()}</div>
     </section>
   );
 });

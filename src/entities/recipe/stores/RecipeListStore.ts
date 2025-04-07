@@ -11,13 +11,54 @@ export class RecipeListStore {
   error: string = '';
   searchQuery: string = '';
   selectedCategory: number | null = null;
-
+  ratingFilter: number | null = null;
+  vegetarianFilter: boolean = false;
+  timeFilters: {
+    totalTime: number | null;
+    cookingTime: number | null;
+    preparationTime: number | null;
+  } = {
+    totalTime: null,
+    cookingTime: null,
+    preparationTime: null,
+  };
   constructor() {
     makeAutoObservable(this);
   }
 
+  setRatingFilter(rating: number | null) {
+    this.ratingFilter = rating;
+  }
+
   setSearchQuery(query: string) {
     this.searchQuery = query;
+  }
+  setTotalTime(query: number | null) {
+    if (query !== null) {
+      this.timeFilters.totalTime = query;
+    } else {
+      this.timeFilters.totalTime = null;
+    }
+  }
+
+  setCookingTime(query: number | null) {
+    if (query !== null) {
+      this.timeFilters.cookingTime = query;
+    } else {
+      this.timeFilters.cookingTime = null;
+    }
+  }
+
+  setPreparationTime(query: number | null) {
+    if (query !== null) {
+      this.timeFilters.preparationTime = query;
+    } else {
+      this.timeFilters.preparationTime = null;
+    }
+  }
+
+  setVegetarianFilter(vegetarian: boolean) {
+    this.vegetarianFilter = vegetarian;
   }
 
   setSelectedCategory(categoryId: number | null) {
@@ -31,12 +72,40 @@ export class RecipeListStore {
       if (this.searchQuery) {
         filters.name = { $containsi: this.searchQuery };
       }
+
       if (this.selectedCategory !== null) {
         filters.category = {
           id: {
             $eq: this.selectedCategory,
           },
         };
+      }
+
+      if (this.ratingFilter !== null) {
+        filters.rating = {
+          $gte: this.ratingFilter,
+        };
+      }
+
+      if (this.vegetarianFilter === true) {
+        filters.vegetarian = {
+          $eq: this.vegetarianFilter,
+        };
+      } else {
+        filters.vegetarian = {};
+      }
+
+      // Меньше или равно значению
+      if (this.timeFilters.totalTime !== null) {
+        filters.totalTime = { $lte: this.timeFilters.totalTime };
+      }
+
+      if (this.timeFilters.cookingTime !== null) {
+        filters.cookingTime = { $lte: this.timeFilters.cookingTime };
+      }
+
+      if (this.timeFilters.preparationTime !== null) {
+        filters.preparationTime = { $lte: this.timeFilters.preparationTime };
       }
 
       const { data, pagination } = await getPaginatedRecipes(

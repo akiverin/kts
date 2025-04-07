@@ -3,41 +3,41 @@
   align-items: center;
   justify-content: center;
   gap: 15px;
-}
 
-.pages {
-  display: flex;
-}
-
-.page {
-  width: 40px;
-  height: 40px;
-  border: 1.5px solid $pagination-page-border;
-  background: none;
-  cursor: pointer;
-
-  &.active {
-    background: $brand;
-    color: white;
-    border: 1px solid transparent;
+  &__pages {
+    display: flex;
   }
-}
 
-.arrow {
-  height: 42px;
-  width: 38px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 8px;
+  &__page {
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid $pagination-page-border;
+    background: none;
+    cursor: pointer;
 
-  &.disabled {
-    color: $pagination-arrow-disabled;
-    cursor: not-allowed;
+    &--active {
+      background: $brand;
+      color: white;
+      border: 1px solid transparent;
+    }
   }
-}
 
-.icon {
-  width: 24px;
-  height: 24px;
+  &__arrow {
+    height: 42px;
+    width: 38px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 8px;
+
+    &--disabled {
+      color: $pagination-arrow-disabled;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
 }

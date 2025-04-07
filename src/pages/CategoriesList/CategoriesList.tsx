@@ -80,11 +80,11 @@ const CategoriesList: React.FC = observer(() => {
     console.log(categoryListStore.categories);
     return (
       <>
-        <div className={styles.grid}>
+        <div className={styles.categories__grid}>
           {categoryListStore.categories.map((category) => (
             <Card
               key={category.id}
-              className={styles.card}
+              className={styles.categories__card}
               image={category.imageUrl}
               title={category.name}
               contentSlot={`${category.recipeCount} recipes`}
@@ -103,8 +103,8 @@ const CategoriesList: React.FC = observer(() => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
+    <div className={styles.categories__wrapper}>
+      <div className={styles.categories__header}>
         <Text view="title" tag="h1" weight="bold">
           Meals Categories
         </Text>
@@ -113,7 +113,7 @@ const CategoriesList: React.FC = observer(() => {
         </Text>
       </div>
 
-      <div className={styles.controls}>
+      <div className={styles.categories__controls}>
         <SearchBar placeholder="Search categories" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
       </div>
 

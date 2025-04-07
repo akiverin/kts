@@ -10,45 +10,44 @@
   overflow: hidden;
   height: 100%;
   transition: box-shadow 0.2s ease-in-out;
-}
+  &:hover {
+    box-shadow: $shadow;
+  }
 
-.card:hover {
-  box-shadow: $shadow;
-}
+  &__header {
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    min-height: 348px;
+    max-height: 360px;
+    width: 100%;
+    background-color: $card-image-bg;
+  }
 
-.header {
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;
-  min-height: 348px;
-  max-height: 360px;
-  width: 100%;
-  background-color: $card-image-bg;
-}
+  &__image {
+    width: 100%;
+    object-fit: cover;
+  }
 
-.image {
-  width: 100%;
-  object-fit: cover;
-}
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $space-l;
+    padding: 0 $space-xs;
+    justify-content: space-between;
+    height: 100%;
+  }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: $space-l;
-  padding: 0 $space-xs;
-  justify-content: space-between;
-  height: 100%;
-}
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xxs;
+  }
 
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: $space-xxs;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $space-xxs;
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-xxs;
+  }
 }

@@ -13,11 +13,11 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const Button: React.FC<ButtonProps> = ({ className, loading = false, children, ...props }: ButtonProps) => {
   return (
     <button
-      className={classNames(styles.button, className, loading && styles.buttonLoading)}
+      className={classNames(styles.button, className, loading && styles['button--loading'])}
       disabled={loading}
       {...props}
     >
-      {loading && <Loader className={styles.loader} size="s" />}
+      {loading && <Loader className={styles.button__loader} size="s" />}
       {children}
     </button>
   );

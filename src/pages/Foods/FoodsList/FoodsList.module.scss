@@ -1,45 +1,56 @@
-.content {
+.foods-list {
   padding-top: 36px;
   padding-bottom: 28px;
-}
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0;
+    margin: 48px 0;
+  }
+  &__item {
+    max-width: 360px;
+  }
 
-.wrapper {
-  padding: 0 100px;
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  &__wrapper {
+    padding: 0 100px;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: $space-l;
-  width: 100%;
-  margin-top: 48px;
-  align-items: end;
-}
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $space-l;
+    width: 100%;
+    margin-top: 48px;
+    align-items: end;
+  }
 
-.dropdown {
-  max-width: 300px;
-}
+  &__dropdown {
+    max-width: 300px;
+  }
 
-.foods {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 0;
-  margin: 48px 0;
-}
+  &__time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-.food {
-  max-width: 360px;
-}
+  &__filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: center;
+  }
 
-.time {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  &__vegetarian {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 }

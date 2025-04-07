@@ -15,7 +15,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ value, afterSlot, onChange, className, ...props }: InputProps, ref) => {
     return (
       <div
-        className={classNames(styles.inputContainer, className, {
+        className={classNames(styles['input-container'], className, {
           [styles['input-container--icon']]: afterSlot,
         })}
       >

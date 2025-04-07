@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './Header.module.scss';
 import Text from 'components/Text';
 import { Link } from 'react-router';
@@ -8,9 +7,9 @@ const Header = () => {
   const location = useLocation();
   return (
     <header className={styles.header}>
-      <div className={styles.wrapper}>
-        <div className={styles.map}>
-          <Link className={styles.linkLogo} to="/">
+      <div className={styles.header__wrapper}>
+        <div className={styles.header__map}>
+          <Link className={styles['header__link-logo']} to="/">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_38_1439)">
                 <path
@@ -51,10 +50,10 @@ const Header = () => {
               Food Client
             </Text>
           </Link>
-          <nav className={styles.navigate}>
-            <ul className={styles.navList}>
-              <li className={styles.navItem}>
-                <Link className={styles.link} to="/">
+          <nav className={styles.header__navigate}>
+            <ul className={styles['header__nav-list']}>
+              <li className={styles['header__nav-item']}>
+                <Link className={styles.header__link} to="/">
                   <Text
                     view="p-16"
                     color={location.pathname == '/' ? 'accent' : 'primary'}
@@ -64,8 +63,8 @@ const Header = () => {
                   </Text>
                 </Link>
               </li>
-              <li className={styles.navItem}>
-                <Link className={styles.link} to="/categories">
+              <li className={styles['header__nav-item']}>
+                <Link className={styles.header__link} to="/categories">
                   <Text
                     view="p-16"
                     color={location.pathname == '/categories' ? 'accent' : 'primary'}
@@ -75,25 +74,25 @@ const Header = () => {
                   </Text>
                 </Link>
               </li>
-              <li className={styles.navItem}>
-                <Link className={styles.link} to="/">
+              <li className={styles['header__nav-item']}>
+                <Link className={styles.header__link} to="/">
                   <Text view="p-16">Products</Text>
                 </Link>
               </li>
-              <li className={styles.navItem}>
-                <Link className={styles.link} to="/">
+              <li className={styles['header__nav-item']}>
+                <Link className={styles.header__link} to="/">
                   <Text view="p-16">Menu Items</Text>
                 </Link>
               </li>
-              <li className={styles.navItem}>
-                <Link className={styles.link} to="/">
+              <li className={styles['header__nav-item']}>
+                <Link className={styles.header__link} to="/">
                   <Text view="p-16">Meal Planning</Text>
                 </Link>
               </li>
             </ul>
           </nav>
         </div>
-        <div className={styles.actions}>
+        <div className={styles.header__actions}>
           <Link to="/">
             <p className="visuallyHidden">Список сохраненных рецептов</p>
             <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">

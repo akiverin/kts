@@ -14,20 +14,20 @@ type IngredientsProps = {
 
 const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.section}>
+    <div className={styles.ingredients}>
+      <div className={styles.ingredients__section}>
         <Text view="p-20" weight="medium">
           Ingredients
         </Text>
-        <div className={styles.grid}>
+        <div className={styles.ingredients__grid}>
           {ingredients.map((item, index) => (
-            <div key={index} className={styles.item}>
+            <div key={index} className={styles.ingredients__item}>
               <DishIcon />
               <Text view="p-16">{item.name}</Text>
             </div>
           ))}
           <svg
-            className={styles.border}
+            className={styles.ingredients__border}
             width="7"
             height="243"
             viewBox="0 0 7 243"
@@ -43,13 +43,13 @@ const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => 
         </div>
       </div>
 
-      <div className={styles.section}>
+      <div className={styles.ingredients__section}>
         <Text view="p-20" weight="medium">
           Equipment
         </Text>
-        <div className={styles.grid}>
+        <div className={styles.ingredients__grid}>
           {equipment.map((item, index) => (
-            <div key={index} className={styles.item}>
+            <div key={index} className={styles.ingredients__item}>
               <EquipmentIcon />
               <Text view="p-16">{item.name}</Text>
             </div>

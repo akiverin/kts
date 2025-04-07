@@ -5,44 +5,42 @@
   align-items: center;
   justify-content: center;
   color: $loader-bg;
-}
 
-.circle {
-  box-sizing: border-box;
-  display: inline-block;
-  border-radius: 50%;
-  border: 5px solid currentColor;
-  height: 40px;
-  width: 40px;
-  border-bottom-color: transparent;
-  transform: rotate(-58deg);
-  animation: rotate 1s linear infinite;
-}
+  &__circle {
+    box-sizing: border-box;
+    display: inline-block;
+    border-radius: 50%;
+    border: 5px solid currentColor;
+    height: 40px;
+    width: 40px;
+    border-bottom-color: transparent;
+    transform: rotate(-58deg);
+    animation: rotate 1s linear infinite;
+  }
 
-.loaderSmall {
-  height: 24px;
-  width: 24px;
-}
+  &--small {
+    height: 24px;
+    width: 24px;
+    & .loader__circle {
+      border-radius: 50%;
+      border-width: 2px;
+      height: 16px;
+      width: 16px;
+      border-bottom-color: transparent;
+    }
+  }
 
-.loaderSmall .circle {
-  border-radius: 50%;
-  border-width: 2px;
-  height: 16px;
-  width: 16px;
-  border-bottom-color: transparent;
-}
-
-.loaderMedium {
-  height: 48px;
-  width: 48px;
-}
-
-.loaderMedium .circle {
-  border-radius: 50%;
-  border-width: 4px;
-  height: 32px;
-  width: 32px;
-  border-bottom-color: transparent;
+  &--medium {
+    height: 48px;
+    width: 48px;
+    &.loader__circle {
+      border-radius: 50%;
+      border-width: 4px;
+      height: 32px;
+      width: 32px;
+      border-bottom-color: transparent;
+    }
+  }
 }
 
 @keyframes rotate {
