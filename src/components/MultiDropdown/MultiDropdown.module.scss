@@ -1,28 +1,36 @@
-.menu {
-  background-color: $dropdown-options-bg;
-  width: 100%;
-  box-shadow: $shadow;
-  margin-top: $space-xxs;
-  border-radius: $border-radius;
-}
+.dropdown {
+  position: relative;
 
-.option {
-  padding: $space-s $space-xs;
-  cursor: pointer;
-}
+  &__menu {
+    position: absolute;
+    background-color: $dropdown-options-bg;
+    width: 100%;
+    box-shadow: $shadow;
+    top: 52px;
+    margin-top: $space-xxs;
+    border-radius: $border-radius;
+    max-height: 360px;
+    overflow: scroll;
+  }
 
-.option p {
-  transition: color 0.15s ease-in-out;
-}
+  &__option {
+    padding: $space-s $space-xs;
+    cursor: pointer;
+  }
 
-.option:not(.optionSelected):hover p {
-  color: $text-secondary;
-}
+  &__option p {
+    transition: color 0.15s ease-in-out;
+  }
 
-.optionSelected p {
-  color: $text-accent;
-}
+  &__option:not(.dropdown__option--selected):hover p {
+    color: $text-secondary;
+  }
 
-.inputFocus {
-  border-color: $input-border-focus;
+  &__option--selected p {
+    color: $text-accent;
+  }
+
+  &__input--focus {
+    border-color: $input-border-focus;
+  }
 }

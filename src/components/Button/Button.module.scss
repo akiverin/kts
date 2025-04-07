@@ -15,24 +15,23 @@
   transition:
     background-color 0.15s ease-in-out,
     color 0.15s ease-in-out;
-}
+  &:not(.button--loading):hover {
+    background-color: $button-primary-bg-hover;
+    color: $button-primary-text-hover;
+  }
 
-.button:not(.buttonLoading):hover {
-  background-color: $button-primary-bg-hover;
-  color: $button-primary-text-hover;
-}
+  &:not(.button--loading):active {
+    background-color: $button-primary-bg-active;
+    color: $button-primary-text-active;
+  }
 
-.button:not(.buttonLoading):active {
-  background-color: $button-primary-bg-active;
-  color: $button-primary-text-active;
-}
+  &__loader {
+    color: $button-primary-text !important;
+  }
 
-.loader {
-  color: $button-primary-text !important;
-}
-
-.button[disabled] {
-  pointer-events: none;
-  background-color: $button-primary-bg-disabled;
-  color: $button-primary-text-disabled;
+  &[disabled] {
+    pointer-events: none;
+    background-color: $button-primary-bg-disabled;
+    color: $button-primary-text-disabled;
+  }
 }

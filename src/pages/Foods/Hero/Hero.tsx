@@ -4,7 +4,7 @@ import { heroImages } from '.';
 
 const Hero: React.FC = () => {
   return (
-    <section className={styles.hero}>
+    <section className={styles.foods__hero}>
       <picture>
         <source
           type="image/webp"
@@ -49,7 +49,7 @@ const Hero: React.FC = () => {
           alt="cover hero home page"
           loading="lazy"
           decoding="async"
-          className={styles.image}
+          className={styles.foods__image}
         />
       </picture>
     </section>

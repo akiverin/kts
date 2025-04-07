@@ -1,28 +1,33 @@
 import React from 'react';
 import Text from 'components/Text';
-import Dish from 'components/icons/Dish';
-import Equipment from 'components/icons/Equipment';
+import DishIcon from 'components/icons/Dish';
+import EquipmentIcon from 'components/icons/Equipment';
 import styles from './Ingredients.module.scss';
 
-type EquipmentsT = { equipments: Array<{ name: string }> };
-type IngradientsT = { ingradients: Array<{ name: string }> };
+type Ingredient = { name: string };
+type Equipment = { name: string };
 
-const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) => {
+type IngredientsProps = {
+  equipment: Equipment[];
+  ingredients: Ingredient[];
+};
+
+const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.section}>
+    <div className={styles.ingredients}>
+      <div className={styles.ingredients__section}>
         <Text view="p-20" weight="medium">
           Ingredients
         </Text>
-        <div className={styles.grid}>
-          {ingradients.map((item, index) => (
-            <div key={index} className={styles.item}>
-              <Dish />
+        <div className={styles.ingredients__grid}>
+          {ingredients.map((item, index) => (
+            <div key={index} className={styles.ingredients__item}>
+              <DishIcon />
               <Text view="p-16">{item.name}</Text>
             </div>
           ))}
           <svg
-            className={styles.border}
+            className={styles.ingredients__border}
             width="7"
             height="243"
             viewBox="0 0 7 243"
@@ -38,14 +43,14 @@ const Ingredients = ({ ingradients, equipments }: EquipmentsT & IngradientsT) =>
         </div>
       </div>
 
-      <div className={styles.section}>
+      <div className={styles.ingredients__section}>
         <Text view="p-20" weight="medium">
           Equipment
         </Text>
-        <div className={styles.grid}>
-          {equipments.map((item, index) => (
-            <div key={index} className={styles.item}>
-              <Equipment />
+        <div className={styles.ingredients__grid}>
+          {equipment.map((item, index) => (
+            <div key={index} className={styles.ingredients__item}>
+              <EquipmentIcon />
               <Text view="p-16">{item.name}</Text>
             </div>
           ))}

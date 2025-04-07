@@ -1,4 +1,3 @@
-import React from 'react';
 import Text from 'components/Text';
 import styles from './Summary.module.scss';
 
@@ -11,7 +10,7 @@ const Summary = ({ children }: { children: string }) => {
       if (part.startsWith('<b>') && part.endsWith('</b>')) {
         const content = part.replace(/<\/?b>/g, '');
         return (
-          <Text className={styles.text} tag="span" key={index} weight="bold">
+          <Text className={styles.summary__text} tag="span" key={index} weight="bold">
             {content}
           </Text>
         );
@@ -21,14 +20,14 @@ const Summary = ({ children }: { children: string }) => {
         if (match) {
           const [, href, content] = match;
           return (
-            <a key={index} href={href} className={styles.link}>
+            <a key={index} href={href} className={styles.summary__link}>
               {content}
             </a>
           );
         }
       }
       return (
-        <Text className={styles.text} tag="span" key={index}>
+        <Text className={styles.summary__text} tag="span" key={index}>
           {part}
         </Text>
       );

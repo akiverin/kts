@@ -34,11 +34,11 @@ const Card: React.FC<CardProps> = ({
 }: CardProps) => {
   return (
     <div onClick={onClick} className={classNames(styles.card, className)}>
-      <div className={styles.header}>
-        <img src={image} alt="image card" className={styles.image} />
+      <div className={styles.card__header}>
+        <img src={image} alt="image card" className={styles.card__image} />
       </div>
-      <div className={styles.body}>
-        <div className={styles.info}>
+      <div className={styles.card__body}>
+        <div className={styles.card__info}>
           {captionSlot && captionSlot}
           <Text maxLines={2} weight="medium" view="p-20">
             {title}
@@ -48,7 +48,7 @@ const Card: React.FC<CardProps> = ({
           </Text>
         </div>
         {(contentSlot || actionSlot) && (
-          <div className={styles.footer}>
+          <div className={styles.card__footer}>
             {contentSlot && (
               <Text color="accent" weight="bold" view="p-18">
                 {contentSlot}

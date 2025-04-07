@@ -1,73 +1,79 @@
 .food {
   position: relative;
   overflow: hidden;
-}
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  margin: 37px 0 53px;
-}
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    margin: 37px 0 53px;
+  }
 
-.pattern {
-  position: absolute;
-  right: -40px;
-  top: -50px;
-  z-index: -1;
-}
+  &__pattern {
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    z-index: -1;
+  }
 
-.wrapper {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 49px 100px 0;
-}
+  &__wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 49px 100px 0;
+  }
 
-.controls {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
+  &__controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
 
-.info {
-  display: flex;
-}
+  &__back {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 
-.image {
-  max-width: 448px;
-  width: 100%;
-  object-fit: cover;
-  max-height: 298px;
-  border-radius: $border-radius;
-}
+  &__info {
+    display: flex;
+  }
 
-.details {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  &__image {
+    max-width: 448px;
+    width: 100%;
+    object-fit: cover;
+    max-height: 298px;
+    border-radius: $border-radius;
+  }
 
-.list {
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 100px;
-  row-gap: 50px;
-  max-width: 480px;
-}
+  &__details {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $space-xxs;
-}
+  &__list {
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 100px;
+    row-gap: 50px;
+    max-width: 480px;
+  }
 
-.desc {
-  background-color: rgba(181, 70, 15, 0.33);
-  padding: 36px;
-  color: $text-primary;
-  border-radius: $border-radius;
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xxs;
+  }
+
+  &__desc {
+    background-color: rgba(181, 70, 15, 0.33);
+    padding: 36px;
+    color: $text-primary;
+    border-radius: $border-radius;
+  }
 }

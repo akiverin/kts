@@ -43,20 +43,20 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   return (
     <div className={styles.pagination}>
       <button
-        className={classNames(styles.arrow, {
-          [styles.disabled]: currentPage === 1,
+        className={classNames(styles.pagination__arrow, {
+          [styles['pagination__arrow--disabled']]: currentPage === 1,
         })}
         onClick={handlePrevious}
         disabled={currentPage === 1}
       >
-        <ArrowLeft height={32} width={32} className={styles.icon} />
+        <ArrowLeft height={32} width={32} className={styles.pagination__icon} />
       </button>
-      <div className={styles.pages}>
+      <div className={styles.pagination__pages}>
         {getPageNumbers().map((page) => (
           <button
             key={page}
-            className={classNames(styles.page, {
-              [styles.active]: page === currentPage,
+            className={classNames(styles.pagination__page, {
+              [styles['pagination__page--active']]: page === currentPage,
             })}
             onClick={() => onPageChange(page)}
           >
@@ -65,13 +65,13 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         ))}
       </div>
       <button
-        className={classNames(styles.arrow, {
-          [styles.disabled]: currentPage === totalPages,
+        className={classNames(styles.pagination__arrow, {
+          [styles['pagination__arrow--disabled']]: currentPage === totalPages,
         })}
         onClick={handleNext}
         disabled={currentPage === totalPages}
       >
-        <ArrowRight height={32} width={32} className={styles.icon} />
+        <ArrowRight height={32} width={32} className={styles.pagination__icon} />
       </button>
     </div>
   );

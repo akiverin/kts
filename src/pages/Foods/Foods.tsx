@@ -1,12 +1,11 @@
-import React from 'react';
 import Hero from './Hero';
-import Content from './Content';
+import FoodsList from './FoodsList';
 
 const Foods = () => {
   return (
     <>
       <Hero />
-      <Content />
+      <FoodsList />
     </>
   );
 };
