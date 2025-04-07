@@ -1,0 +1,28 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  background-color: $checkbox-bg;
+  border: 1px solid $checkbox-border;
+  cursor: pointer;
+  padding: 0;
+  color: $checkbox-check;
+  transition:
+    color 0.15s ease-in-out,
+    border 0.15s ease-in-out,
+    background-color 0.15s ease-in-out;
+}
+
+.button:hover {
+  background-color: $checkbox-bg-hover;
+  border: 1px solid $checkbox-border-hover;
+  color: $checkbox-check-hover;
+}
+
+.input:disabled + .button {
+  background-color: $checkbox-bg-disabled;
+  border: 1px solid $checkbox-border-disabled;
+  color: $checkbox-check-disabled;
+}

@@ -1,0 +1,46 @@
+.header {
+  background-color: $white;
+}
+
+.wrapper {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 100px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.map {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.linkLogo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.navigate {
+  display: flex;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: $space-m;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}

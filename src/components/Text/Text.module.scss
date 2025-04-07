@@ -1,0 +1,59 @@
+.text {
+  color: black;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &--w-bold {
+    font-weight: 700;
+  }
+
+  &--w-medium {
+    font-weight: 500;
+  }
+
+  &--v-button {
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  &--v-title {
+    font-size: 44px;
+    line-height: 48px;
+  }
+
+  &--v-p-20 {
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  &--v-p-18 {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  &--v-p-16 {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  &--v-p-14 {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  &--c-primary {
+    color: $text-primary;
+  }
+
+  &--c-secondary {
+    color: $text-secondary;
+  }
+
+  &--c-accent {
+    color: $text-accent;
+  }
+}

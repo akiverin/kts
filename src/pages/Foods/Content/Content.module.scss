@@ -1,0 +1,52 @@
+.content {
+  padding-top: 36px;
+  padding-bottom: 28px;
+}
+
+.wrapper {
+  padding: 0 100px;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: $space-l;
+  width: 100%;
+  margin-top: 48px;
+  align-items: end;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 19px;
+  width: 100%;
+}
+
+.dropdown {
+  max-width: 300px;
+}
+
+.foods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  margin: 48px 0;
+}
+
+.food {
+  max-width: 360px;
+}
+
+.time {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}

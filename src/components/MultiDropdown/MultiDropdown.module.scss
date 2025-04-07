@@ -1,0 +1,28 @@
+.menu {
+  background-color: $dropdown-options-bg;
+  width: 100%;
+  box-shadow: $shadow;
+  margin-top: $space-xxs;
+  border-radius: $border-radius;
+}
+
+.option {
+  padding: $space-s $space-xs;
+  cursor: pointer;
+}
+
+.option p {
+  transition: color 0.15s ease-in-out;
+}
+
+.option:not(.optionSelected):hover p {
+  color: $text-secondary;
+}
+
+.optionSelected p {
+  color: $text-accent;
+}
+
+.inputFocus {
+  border-color: $input-border-focus;
+}
