@@ -1,4 +1,5 @@
 import { Recipe } from 'entities/recipe/types';
+import { Image } from 'types/image';
 
 export interface Category {
   id: number;
@@ -19,19 +20,6 @@ export interface CategoryListResponse {
       pageSize: number;
       pageCount: number;
       total: number;
-    };
-  };
-}
-
-export interface Image {
-  width: number;
-  height: number;
-  formats: {
-    thumbnail: {
-      url: string;
-    };
-    small: {
-      url: string;
     };
   };
 }

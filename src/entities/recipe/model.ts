@@ -65,4 +65,8 @@ export class RecipeDetailsModel {
       { label: 'Ratings', value: this.rating },
     ];
   }
+
+  toOption(): { value: string; key: string } {
+    return { value: this.name, key: this.documentId.toString() };
+  }
 }

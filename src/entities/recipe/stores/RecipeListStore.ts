@@ -1,128 +1,151 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { getPaginatedRecipes } from '../api';
 import { Recipe } from '../types';
-import { Pagination } from 'types/pagination';
 import { Meta } from 'utils/meta';
+import { PaginationStore } from 'entities/pagination/stores/PaginationStore';
+import { LoadResponse } from 'types/loadResponse';
+import { Category } from 'entities/category/types';
+import { getCategories } from 'entities/category/api';
+import SearchParamsModel from 'entities/searchParams/model';
 
 export class RecipeListStore {
   recipes: Recipe[] = [];
-  pagination: Pagination = { page: 1, pageSize: 9, pageCount: 1, total: 0 };
+  categories: Category[] = [];
+  pagination = new PaginationStore();
   meta: Meta = Meta.initial;
+  categoriesMeta: Meta = Meta.initial;
   error: string = '';
-  searchQuery: string = '';
-  selectedCategory: number | null = null;
-  ratingFilter: number | null = null;
-  vegetarianFilter: boolean = false;
-  timeFilters: {
-    totalTime: number | null;
-    cookingTime: number | null;
-    preparationTime: number | null;
-  } = {
-    totalTime: null,
-    cookingTime: null,
-    preparationTime: null,
-  };
-  constructor() {
+  searchModel: SearchParamsModel;
+  private _currentRequest: Promise<LoadResponse> | null = null;
+  private _categoriesRequest: Promise<LoadResponse> | null = null;
+
+  constructor(updateParams: (params: URLSearchParams) => void, initialParams: URLSearchParams) {
     makeAutoObservable(this);
+    this.searchModel = new SearchParamsModel(updateParams, initialParams);
   }
+  private _prepareFilters(): Record<string, { [key: string]: unknown }> {
+    const filters: Record<string, { [key: string]: unknown }> = {};
 
-  setRatingFilter(rating: number | null) {
-    this.ratingFilter = rating;
-  }
-
-  setSearchQuery(query: string) {
-    this.searchQuery = query;
-  }
-  setTotalTime(query: number | null) {
-    if (query !== null) {
-      this.timeFilters.totalTime = query;
-    } else {
-      this.timeFilters.totalTime = null;
+    if (this.searchModel.search) {
+      filters.name = { $containsi: this.searchModel.search };
     }
-  }
 
-  setCookingTime(query: number | null) {
-    if (query !== null) {
-      this.timeFilters.cookingTime = query;
-    } else {
-      this.timeFilters.cookingTime = null;
+    if (this.searchModel.category !== null) {
+      filters.category = {
+        id: {
+          $eq: this.searchModel.category,
+        },
+      };
     }
-  }
 
-  setPreparationTime(query: number | null) {
-    if (query !== null) {
-      this.timeFilters.preparationTime = query;
-    } else {
-      this.timeFilters.preparationTime = null;
+    if (this.searchModel.rating !== null) {
+      filters.rating = {
+        $gte: this.searchModel.rating,
+      };
     }
+
+    if (this.searchModel.vegetarian === true) {
+      filters.vegetarian = {
+        $eq: true,
+      };
+    } else {
+      filters.vegetarian = {};
+    }
+
+    if (this.searchModel.totalTime !== null) {
+      filters.totalTime = { $lte: this.searchModel.totalTime };
+    }
+
+    if (this.searchModel.cookingTime !== null) {
+      filters.cookingTime = { $lte: this.searchModel.cookingTime };
+    }
+
+    if (this.searchModel.preparationTime !== null) {
+      filters.preparationTime = { $lte: this.searchModel.preparationTime };
+    }
+
+    return filters;
   }
 
-  setVegetarianFilter(vegetarian: boolean) {
-    this.vegetarianFilter = vegetarian;
-  }
-
-  setSelectedCategory(categoryId: number | null) {
-    this.selectedCategory = categoryId;
-  }
-
-  async fetchRecipes(page: number) {
+  /** Получение списка рецептов с фильтрацией */
+  async fetchRecipes(): Promise<LoadResponse> {
+    if (this._currentRequest) {
+      return this._currentRequest;
+    }
     this.meta = Meta.loading;
-    try {
-      const filters: Record<string, { [key: string]: unknown }> = {};
-      if (this.searchQuery) {
-        filters.name = { $containsi: this.searchQuery };
-      }
+    const page = this.searchModel.page;
+    this._currentRequest = (async () => {
+      try {
+        const filters = this._prepareFilters();
 
-      if (this.selectedCategory !== null) {
-        filters.category = {
-          id: {
-            $eq: this.selectedCategory,
-          },
+        const { data, pagination } = await getPaginatedRecipes(
+          page,
+          this.pagination.pageSize,
+          filters as unknown as Record<string, string | number | boolean | null>,
+        );
+        runInAction(() => {
+          this.recipes = data;
+          this.pagination.setPagination(pagination);
+          this.meta = Meta.success;
+        });
+        return { success: true };
+      } catch (error) {
+        runInAction(() => {
+          this.error = 'Error loading recipe';
+          this.meta = Meta.error;
+        });
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
         };
+      } finally {
+        runInAction(() => {
+          this._currentRequest = null;
+        });
       }
+    })();
 
-      if (this.ratingFilter !== null) {
-        filters.rating = {
-          $gte: this.ratingFilter,
+    return this._currentRequest;
+  }
+  /** Получение всех категорий для выпадающего списка */
+  fetchAllCategories(): Promise<LoadResponse> {
+    if (this._categoriesRequest) return this._categoriesRequest;
+
+    this.categoriesMeta = Meta.loading;
+
+    this._categoriesRequest = (async () => {
+      try {
+        const data = await getCategories();
+        runInAction(() => {
+          this.categories = data;
+          this.categoriesMeta = Meta.success;
+        });
+        return {
+          success: true,
         };
-      }
-
-      if (this.vegetarianFilter === true) {
-        filters.vegetarian = {
-          $eq: this.vegetarianFilter,
+      } catch (error) {
+        runInAction(() => {
+          this.categoriesMeta = Meta.error;
+        });
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
         };
-      } else {
-        filters.vegetarian = {};
+      } finally {
+        runInAction(() => {
+          this._categoriesRequest = null;
+        });
       }
+    })();
 
-      // Меньше или равно значению
-      if (this.timeFilters.totalTime !== null) {
-        filters.totalTime = { $lte: this.timeFilters.totalTime };
-      }
+    return this._categoriesRequest;
+  }
 
-      if (this.timeFilters.cookingTime !== null) {
-        filters.cookingTime = { $lte: this.timeFilters.cookingTime };
-      }
-
-      if (this.timeFilters.preparationTime !== null) {
-        filters.preparationTime = { $lte: this.timeFilters.preparationTime };
-      }
-
-      const { data, pagination } = await getPaginatedRecipes(
-        page,
-        this.pagination.pageSize,
-        filters as unknown as Record<string, string | number | boolean | null>,
-      );
-      runInAction(() => {
-        this.recipes = data;
-        this.pagination = pagination;
-        this.meta = Meta.success;
-      });
-    } catch {
-      runInAction(() => {
-        this.error = 'Error loading recipe';
-        this.meta = Meta.error;
-      });
-    }
+  /** Для использования в селектах / выпадающих меню */
+  get categoryOptions() {
+    return this.categories.map((c) => ({
+      key: String(c.id),
+      value: String(c.title),
+    }));
   }
 }

@@ -9,13 +9,17 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.data.data;
 };
 
-export const getCategoryList = async (page: number, search?: string): Promise<CategoryListResponse> => {
+export const getCategoryList = async (
+  page: number,
+  pageSize: number,
+  search?: string,
+): Promise<CategoryListResponse> => {
   const query = qs.stringify(
     {
       populate: '*',
       pagination: {
         page,
-        pageSize: 9,
+        pageSize,
       },
       filters: {
         title: {

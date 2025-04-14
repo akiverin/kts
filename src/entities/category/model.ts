@@ -26,8 +26,4 @@ export class CategoryModel {
   get createdAt() {
     return new Date(this.data.createdAt).toLocaleDateString();
   }
-
-  toOption() {
-    return { value: this.name, key: this.id.toString() };
-  }
 }
