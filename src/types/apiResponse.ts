@@ -1,8 +1,8 @@
-import { Pagination } from './pagination';
+import { PaginationT } from '../entities/pagination/types';
 
 export type ApiResponse<T> = {
   data: T;
   meta?: {
-    pagination: Pagination;
+    pagination: PaginationT;
   };
 };

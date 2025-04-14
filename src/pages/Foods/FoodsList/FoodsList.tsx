@@ -1,17 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './FoodsList.module.scss';
 import Text from 'components/Text';
-import Button from 'components/Button';
-import Card from 'components/Card';
-import Pagination from 'components/Paganation';
-import Loader from 'components/Loader';
-import timeIcon from 'assets/timeIcon.svg';
-import { Link, useSearchParams } from 'react-router';
-import { Recipe } from 'entities/recipe/types';
+import { useSearchParams } from 'react-router';
 import { RecipeListStore } from 'entities/recipe/stores/RecipeListStore';
-import { CategoryStore } from 'entities/category/stores/CategoryStore';
-import { observer } from 'mobx-react-lite';
-import { Meta } from 'utils/meta';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import SearchBar from 'components/SearchBar';
 import DropdownCategory from './DropdownCategory';
 import { OptionT } from 'components/MultiDropdown';
@@ -19,71 +11,33 @@ import DropdownRating from './DropdownRating/DropdownRating';
 import CheckBox from 'components/CheckBox';
 import TimeInputs from './TimeInputs';
 import { updateSearchParam, resetPageParam } from 'utils/searchParamsHelpers';
+import FoodsListContent from './FoodsListContent';
+import RandomRecipeButton from './RandomRecipeButton';
 
-const recipeListStore = new RecipeListStore();
-const categoryStore = new CategoryStore();
+const RATING_OPTIONS = [
+  { key: '1', value: '1+ stars' },
+  { key: '2', value: '2+ stars' },
+  { key: '3', value: '3+ stars' },
+  { key: '4', value: '4+ stars' },
+  { key: '5', value: '5 stars' },
+];
 
 const FoodsList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [localSearch, setLocalSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<OptionT[]>([]);
-  const [selectedTotalTime, setSelectedTotalTime] = useState<number | null>(null);
-  const [selectedCookingTime, setSelectedCookingTime] = useState<number | null>(null);
-  const [selectedPreparationTime, setSelectedPreparationTime] = useState<number | null>(null);
+  const recipeListStore = useLocalObservable(
+    () => new RecipeListStore(setSearchParams, new URLSearchParams(searchParams.toString())),
+  );
+  useEffect(() => {
+    recipeListStore.searchModel.initFromParams(new URLSearchParams(searchParams.toString()));
+    recipeListStore.fetchRecipes();
+    setLocalSearch(recipeListStore.searchModel.search);
+  }, [recipeListStore, searchParams]);
 
   useEffect(() => {
-    const search = searchParams.get('search') || '';
-    const category = searchParams.get('category') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const rating = searchParams.get('rating');
-    const totalTime = searchParams.get('totalTime') || '';
-    const cookingTime = searchParams.get('cookingTime') || '';
-    const preparationTime = searchParams.get('preparationTime') || '';
-    const vegetarian = searchParams.get('vegetarian');
-
-    setLocalSearch(search);
-    recipeListStore.setSearchQuery(search);
-
-    const totalTimeNum = Number(totalTime) || null;
-    setSelectedTotalTime(totalTimeNum);
-    if (recipeListStore.setTotalTime) {
-      recipeListStore.setTotalTime(totalTimeNum);
-    }
-
-    const cookingTimeNum = Number(cookingTime) || null;
-    setSelectedCookingTime(cookingTimeNum);
-    if (recipeListStore.setCookingTime) {
-      recipeListStore.setCookingTime(cookingTimeNum);
-    }
-
-    const preparationTimeNum = Number(preparationTime) || null;
-    setSelectedPreparationTime(preparationTimeNum);
-    if (recipeListStore.setPreparationTime) {
-      recipeListStore.setPreparationTime(preparationTimeNum);
-    }
-
-    if (category) {
-      const categoryId = parseInt(category, 10);
-      setSelectedCategory(categoryId);
-      recipeListStore.setSelectedCategory(categoryId);
-    } else {
-      setSelectedCategory(null);
-      recipeListStore.setSelectedCategory(null);
-    }
-
-    if (rating) {
-      setSelectedRating([{ key: rating, value: `${rating}+ stars` }]);
-      recipeListStore.setRatingFilter(Number(rating));
-    }
-
-    recipeListStore.setVegetarianFilter(vegetarian === 'true');
-    recipeListStore.fetchRecipes(page);
-  }, [searchParams]);
-
-  useEffect(() => {
-    categoryStore.fetchCategories();
-  }, []);
+    recipeListStore.fetchAllCategories();
+  }, [recipeListStore]);
 
   const onSearch = () => {
     const updatedParams: Record<string, string> = {
@@ -113,17 +67,6 @@ const FoodsList: React.FC = observer(() => {
     [searchParams, setSearchParams],
   );
 
-  const onPageChange = useCallback(
-    (page: number) => {
-      const updatedParams = {
-        ...Object.fromEntries(searchParams.entries()),
-        page: page.toString(),
-      };
-      setSearchParams(updatedParams);
-    },
-    [searchParams, setSearchParams],
-  );
-
   const handleFilterChange = useCallback(
     (filterType: string, value: OptionT[] | boolean) => {
       const params = new URLSearchParams(searchParams);
@@ -141,92 +84,28 @@ const FoodsList: React.FC = observer(() => {
 
   const handleTimeChange = useCallback(
     (timeType: 'totalTime' | 'cookingTime' | 'preparationTime', value: number | null) => {
-      const updatedParams = new URLSearchParams(searchParams);
-      updatedParams.set('page', '1');
-
-      if (value != null && !Number.isNaN(value)) {
-        updatedParams.set(timeType, value.toString());
-      } else {
-        updatedParams.delete(timeType);
+      if (timeType === 'totalTime') {
+        recipeListStore.searchModel.setTotalTime(value);
+      } else if (timeType === 'cookingTime') {
+        recipeListStore.searchModel.setCookingTime(value);
+      } else if (timeType === 'preparationTime') {
+        recipeListStore.searchModel.setPreparationTime(value);
       }
-
-      setSearchParams(updatedParams);
+      recipeListStore.fetchRecipes();
     },
-    [searchParams, setSearchParams],
+    [recipeListStore],
   );
 
-  const categoryOptions = useMemo(() => categoryStore.asOptions, [categoryStore.asOptions]);
+  const categoryOptions = useMemo(() => recipeListStore.categoryOptions, [recipeListStore.categoryOptions]);
   const getCategoryOption = useCallback(
     (id: number | null) =>
-      id !== null ? categoryStore.asOptions.find((opt) => opt.key === id.toString()) || null : null,
-    [categoryStore.asOptions],
+      id !== null ? recipeListStore.categoryOptions.find((opt) => opt.key === id.toString()) || null : null,
+    [recipeListStore.categoryOptions],
   );
   const selectedOptionCategory = useMemo(
-    () => getCategoryOption(selectedCategory),
-    [selectedCategory, getCategoryOption],
+    () => getCategoryOption(recipeListStore.searchModel.category),
+    [getCategoryOption, recipeListStore.searchModel.category],
   );
-
-  const renderContent = useCallback(() => {
-    if (recipeListStore.meta === Meta.loading) {
-      return (
-        <>
-          <Text view="title" weight="bold">
-            Loading...
-          </Text>
-          <Loader />
-        </>
-      );
-    }
-
-    if (recipeListStore.meta === Meta.error) {
-      return (
-        <Text view="title" weight="bold">
-          {recipeListStore.error}
-        </Text>
-      );
-    }
-
-    if (recipeListStore.recipes.length === 0) {
-      return (
-        <Text view="title" weight="bold">
-          List of recipes not found!
-        </Text>
-      );
-    }
-
-    return (
-      <>
-        <ul className={styles['foods-list__list']}>
-          {recipeListStore.recipes.map((recipe: Recipe) => (
-            <li key={recipe.documentId} className={styles['foods-list__item']}>
-              <Link to={`/foods/${recipe.documentId}`}>
-                <Card
-                  image={recipe.images[0]?.url || ''}
-                  title={recipe.name}
-                  subtitle={recipe.summary}
-                  contentSlot={`${recipe.calories} kcal`}
-                  actionSlot={<Button onClick={(event) => event.preventDefault()}>Save</Button>}
-                  captionSlot={
-                    <div className={styles['foods-list__time']}>
-                      <img src={timeIcon} alt="icon time" />
-                      <Text color="secondary" weight="medium" view="p-14">
-                        {`${recipe.preparationTime} minutes`}
-                      </Text>
-                    </div>
-                  }
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Pagination
-          currentPage={recipeListStore.pagination.page}
-          totalPages={recipeListStore.pagination.pageCount}
-          onPageChange={onPageChange}
-        />
-      </>
-    );
-  }, [onPageChange]);
 
   return (
     <section className={styles['foods-list']}>
@@ -236,33 +115,31 @@ const FoodsList: React.FC = observer(() => {
           <u>holiday feasts</u>.
         </Text>
         <div className={styles['foods-list__actions']}>
-          <SearchBar placeholder="Enter dishes" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
+          <div className={styles['foods-list__search']}>
+            <SearchBar placeholder="Enter dishes" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
+            <RandomRecipeButton recipes={recipeListStore.recipes} />
+          </div>
           <div className={styles['foods-list__filters']}>
             <label className={styles['foods-list__vegetarian']}>
               <CheckBox
-                checked={recipeListStore.vegetarianFilter}
+                checked={recipeListStore.searchModel.vegetarian}
                 onChange={(value) => {
-                  handleFilterChange('vegetarian', value);
+                  recipeListStore.searchModel.setVegetarian(value);
+                  recipeListStore.fetchRecipes();
                 }}
               />
               <Text view="p-18">Vegetarian</Text>
             </label>
             <TimeInputs
-              totalTime={selectedTotalTime}
-              cookingTime={selectedCookingTime}
-              preparationTime={selectedPreparationTime}
+              totalTime={recipeListStore.searchModel.totalTime}
+              cookingTime={recipeListStore.searchModel.cookingTime}
+              preparationTime={recipeListStore.searchModel.preparationTime}
               onTimeChange={handleTimeChange}
             />
             <DropdownRating
               placeholder="Rating"
               value={selectedRating}
-              options={[
-                { key: '1', value: '1+ stars' },
-                { key: '2', value: '2+ stars' },
-                { key: '3', value: '3+ stars' },
-                { key: '4', value: '4+ stars' },
-                { key: '5', value: '5 stars' },
-              ]}
+              options={RATING_OPTIONS}
               getTitle={(values) => values[0]?.value || 'Rating'}
               onChange={(value) => {
                 setSelectedRating(Array.isArray(value) ? value : [value]);
@@ -278,7 +155,16 @@ const FoodsList: React.FC = observer(() => {
             />
           </div>
         </div>
-        {renderContent()}
+        <FoodsListContent
+          recipes={recipeListStore.recipes}
+          meta={recipeListStore.meta}
+          error={recipeListStore.error}
+          pagination={recipeListStore.pagination}
+          onPageChange={(page) => {
+            recipeListStore.searchModel.setPage(page);
+            recipeListStore.fetchRecipes();
+          }}
+        />
       </div>
     </section>
   );

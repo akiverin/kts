@@ -1,4 +1,4 @@
-.foods-list {
+.foods-favorites {
   padding-top: 36px;
   padding-bottom: 28px;
   &__list {
@@ -9,6 +9,14 @@
     padding: 0;
     margin: 48px 0;
   }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
   &__item {
     max-width: 360px;
   }
@@ -52,12 +60,5 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-
-  &__search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
   }
 }

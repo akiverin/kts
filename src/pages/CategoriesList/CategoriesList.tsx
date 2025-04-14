@@ -1,37 +1,38 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './CategoriesList.module.scss';
 import Text from 'components/Text';
-import Card from 'components/Card';
-import Pagination from 'components/Paganation';
-import Loader from 'components/Loader';
 import { useSearchParams, useNavigate } from 'react-router';
-import { observer } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { CategoryListStore } from 'entities/category/stores/CategoryListStore';
-import { Meta } from 'utils/meta';
 import SearchBar from 'components/SearchBar';
-
-const categoryListStore = new CategoryListStore();
+import { debounce } from 'utils/debounce';
+import CategoriesCards from './CategoriesCards';
 
 const CategoriesList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
+  const categoryListStore = useLocalObservable(() => new CategoryListStore());
   const [localSearch, setLocalSearch] = useState('');
-  const page = parseInt(searchParams.get('page') || '1', 10);
 
   useEffect(() => {
     const search = searchParams.get('search') || '';
+    const page = parseInt(searchParams.get('page') || '1', 10);
+
     setLocalSearch(search);
     categoryListStore.setSearchQuery(search);
     categoryListStore.fetchCategories(page);
-  }, [searchParams, page]);
+  }, [categoryListStore, searchParams]);
 
-  const onSearch = useCallback(() => {
-    setSearchParams({
-      search: localSearch,
-      page: '1',
-    });
-  }, [localSearch, setSearchParams]);
+  const onSearch = useMemo(
+    () =>
+      debounce(() => {
+        setSearchParams({
+          search: localSearch,
+          page: '1',
+        });
+      }, 500),
+    [localSearch, setSearchParams],
+  );
 
   const onPageChange = useCallback(
     (page: number) => {
@@ -50,58 +51,6 @@ const CategoriesList: React.FC = observer(() => {
     [navigate],
   );
 
-  const renderContent = () => {
-    if (categoryListStore.meta === Meta.loading) {
-      return (
-        <div className={styles.loader}>
-          <Text view="title" weight="bold">
-            Loading...
-          </Text>
-          <Loader />
-        </div>
-      );
-    }
-
-    if (categoryListStore.meta === Meta.error) {
-      return (
-        <Text view="title" weight="bold">
-          {categoryListStore.error}
-        </Text>
-      );
-    }
-
-    if (categoryListStore.categories.length === 0) {
-      return (
-        <Text view="title" weight="bold">
-          No categories found
-        </Text>
-      );
-    }
-    console.log(categoryListStore.categories);
-    return (
-      <>
-        <div className={styles.categories__grid}>
-          {categoryListStore.categories.map((category) => (
-            <Card
-              key={category.id}
-              className={styles.categories__card}
-              image={category.imageUrl}
-              title={category.name}
-              contentSlot={`${category.recipeCount} recipes`}
-              subtitle={`Created: ${category.createdAt}`}
-              onClick={() => handleCardClick(category.id)}
-            />
-          ))}
-        </div>
-        <Pagination
-          currentPage={categoryListStore.pagination.page}
-          totalPages={categoryListStore.pagination.pageCount}
-          onPageChange={onPageChange}
-        />
-      </>
-    );
-  };
-
   return (
     <div className={styles.categories__wrapper}>
       <div className={styles.categories__header}>
@@ -117,7 +66,14 @@ const CategoriesList: React.FC = observer(() => {
         <SearchBar placeholder="Search categories" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
       </div>
 
-      {renderContent()}
+      <CategoriesCards
+        categories={categoryListStore.categories}
+        meta={categoryListStore.meta}
+        error={categoryListStore.error}
+        pagination={categoryListStore.pagination}
+        onPageChange={onPageChange}
+        handleCardClick={handleCardClick}
+      />
     </div>
   );
 });

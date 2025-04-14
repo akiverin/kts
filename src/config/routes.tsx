@@ -3,6 +3,7 @@ import App from '../App';
 import Foods from '../pages/Foods';
 import Food from '../pages/Food';
 import CategoriesList from '../pages/CategoriesList';
+import FavoritesList from '../pages/FavoritesList';
 
 export const routesConfig: RouteObject[] = [
   {
@@ -24,6 +25,10 @@ export const routesConfig: RouteObject[] = [
       {
         path: '/categories',
         element: <CategoriesList />,
+      },
+      {
+        path: '/favorites',
+        element: <FavoritesList />,
       },
     ],
   },
