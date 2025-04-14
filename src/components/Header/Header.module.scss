@@ -1,46 +1,50 @@
 .header {
   background-color: $white;
-}
 
-.wrapper {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 100px;
-  max-width: 1440px;
-  margin: 0 auto;
-}
+  &__wrapper {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 100px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
 
-.map {
-  display: flex;
-  align-items: center;
-  gap: 80px;
-}
+  &__map {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+  }
 
-.linkLogo {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+  &__link-logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 
-.link {
-  text-decoration: none;
-}
+  &__link {
+    text-decoration: none;
+    transition: opacity 0.15s ease-in-out;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
 
-.navigate {
-  display: flex;
-}
+  &__navigate {
+    display: flex;
+  }
 
-.navList {
-  display: flex;
-  align-items: center;
-  gap: $space-m;
-}
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
 
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 17px;
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+  }
 }

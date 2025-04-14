@@ -1,0 +1,9 @@
+.timeInputs {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  & div {
+    max-width: 160px;
+  }
+}

@@ -1,4 +1,4 @@
-.inputContainer {
+.input-container {
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -11,33 +11,31 @@
   padding: 0 $space-xs;
   color: $input-text;
   border-radius: $border-radius;
-}
+  & input {
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    line-height: 20px;
+    height: 52px;
+    width: 100%;
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    &::placeholder {
+      color: $input-placeholder;
+    }
+  }
 
-.inputContainer input {
-  box-sizing: border-box;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  line-height: 20px;
-  height: 52px;
-  width: 100%;
-  background-color: transparent;
-  padding: 0;
-  color: inherit;
-}
+  &:has(input[disabled]) {
+    background-color: $input-bg-disabled;
+    border-color: $input-border-disabled;
+    color: $input-text-disabled;
+  }
 
-.inputContainer input::placeholder {
-  color: $input-placeholder;
-}
-
-.inputContainer:has(input[disabled]) {
-  background-color: $input-bg-disabled;
-  border-color: $input-border-disabled;
-  color: $input-text-disabled;
-}
-
-.inputContainer:has(input:focus) {
-  border: 1px solid $input-border-focus;
-  background-color: $input-bg-focus;
-  color: $input-text-focus;
+  &:has(input:focus) {
+    border: 1px solid $input-border-focus;
+    background-color: $input-bg-focus;
+    color: $input-text-focus;
+  }
 }

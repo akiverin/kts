@@ -1,30 +1,31 @@
-.container {
+.ingredients {
   margin: 0 auto;
   display: flex;
   width: 100%;
   gap: 100px;
-}
+  overflow: hidden;
 
-.section {
-  position: relative;
-}
+  &__section {
+    position: relative;
+  }
 
-.item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  max-width: 273px;
-}
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 273px;
+  }
 
-.grid {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px 29px;
-}
+  &__grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 29px;
+  }
 
-.border {
-  position: absolute;
-  top: 0;
-  right: -50px;
+  &__border {
+    position: absolute;
+    top: 0;
+    right: -50px;
+  }
 }
