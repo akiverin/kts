@@ -1,0 +1,37 @@
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  max-width: 1440px;
+  padding: 0 100px;
+  margin: 0 auto;
+
+  &__wrapper {
+    background-color: $white;
+    padding: $space-xl;
+    border-radius: $border-radius;
+    box-shadow: $shadow;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  &__details {
+    margin: $space-xl 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    row-gap: $space-m;
+    column-gap: $space-m;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $space-m;
+  }
+}
