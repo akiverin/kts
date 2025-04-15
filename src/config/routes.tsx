@@ -7,6 +7,7 @@ import FavoritesList from '../pages/FavoritesList';
 import LoginPage from '../pages/LoginPage';
 import RegistrationPage from '../pages/RegistrationPage';
 import Profile from '../pages/Profile';
+import ProductsList from '../pages/ProductsList';
 
 export const routesConfig: RouteObject[] = [
   {
@@ -28,6 +29,10 @@ export const routesConfig: RouteObject[] = [
       {
         path: '/categories',
         element: <CategoriesList />,
+      },
+      {
+        path: '/products',
+        element: <ProductsList />,
       },
       {
         path: '/favorites',

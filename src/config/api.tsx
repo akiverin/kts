@@ -24,4 +24,8 @@ export const apiRoutes = {
     auth: '/auth/local',
     register: '/auth/local/register',
   },
+  products: {
+    getAll: '/products',
+    getById: (id: string) => `/products/${id}`,
+  },
 };

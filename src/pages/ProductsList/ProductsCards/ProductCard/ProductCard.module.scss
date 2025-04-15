@@ -1,0 +1,59 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 348px;
+  padding: $space-xl;
+  background-color: $card-bg;
+  gap: $space-xl;
+  padding-bottom: $space-xl;
+  border-radius: $border-radius;
+  overflow: hidden;
+  height: 100%;
+  transition: box-shadow 0.2s ease-in-out;
+  &:hover {
+    box-shadow: $shadow;
+  }
+
+  &__header {
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    min-height: 348px;
+    max-height: 360px;
+    width: 100%;
+    background-color: $card-image-bg;
+  }
+
+  &__image {
+    width: 100%;
+    object-fit: cover;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $space-l;
+    padding: 0 $space-xs;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xxs;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-xxs;
+  }
+
+  &__content {
+    display: flex;
+    gap: $space-xs;
+    align-items: center;
+  }
+}

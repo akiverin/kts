@@ -77,8 +77,14 @@ const Header: React.FC = observer(() => {
                 </Link>
               </li>
               <li className={styles['header__nav-item']}>
-                <Link className={styles.header__link} to="/">
-                  <Text view="p-16">Products</Text>
+                <Link className={styles.header__link} to="/products">
+                  <Text
+                    view="p-16"
+                    color={location.pathname == '/products' ? 'accent' : 'primary'}
+                    weight={location.pathname == '/products' ? 'bold' : 'normal'}
+                  >
+                    Products
+                  </Text>
                 </Link>
               </li>
               <li className={styles['header__nav-item']}>
