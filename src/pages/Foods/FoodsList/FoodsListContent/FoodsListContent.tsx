@@ -31,12 +31,12 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
   };
   if (meta === Meta.loading || meta === Meta.initial) {
     return (
-      <>
+      <div className="loader">
         <Text view="title" weight="bold">
           Loading...
         </Text>
         <Loader />
-      </>
+      </div>
     );
   }
 

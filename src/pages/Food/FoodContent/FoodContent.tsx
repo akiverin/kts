@@ -19,12 +19,12 @@ interface Props {
 const FoodContent: React.FC<Props> = ({ food, meta, error, navigate }) => {
   if (meta === Meta.loading || meta === Meta.initial) {
     return (
-      <>
+      <div className="loader">
         <Text view="title" weight="bold">
           Loading...
         </Text>
         <Loader />
-      </>
+      </div>
     );
   }
 
