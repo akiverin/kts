@@ -63,7 +63,7 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
           <li key={recipe.documentId} className={styles['foods-list__item']}>
             <Link to={`/foods/${recipe.documentId}`}>
               <Card
-                image={recipe.images[0]?.url || ''}
+                image={recipe.images[0].url || ''}
                 title={recipe.name}
                 subtitle={recipe.summary}
                 contentSlot={`${recipe.calories} kcal`}

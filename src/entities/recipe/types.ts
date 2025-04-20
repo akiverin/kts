@@ -35,7 +35,7 @@ export type RecipeDetails = {
   };
   directions: Array<{ description: string }>;
   equipments: Array<{ name: string }>;
-  ingradients: Array<{ name: string }>;
+  ingradients: Array<{ name: string; amount: number; unit: string }>;
   summary: string;
   vegetarian: boolean;
 };

@@ -1,0 +1,12 @@
+@mixin wrapper {
+  padding: 0 100px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+@mixin wrapper-f-column {
+  @include wrapper;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

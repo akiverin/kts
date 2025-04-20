@@ -6,9 +6,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 100px;
-    max-width: 1440px;
-    margin: 0 auto;
+    @include wrapper;
   }
 
   &__map {
@@ -21,7 +19,7 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: $space-l;
   }
 
   &__link {

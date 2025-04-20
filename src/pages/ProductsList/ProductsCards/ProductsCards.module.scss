@@ -1,16 +1,8 @@
 .products {
   &__grid {
     display: grid;
-    gap: 2rem;
+    gap: 4rem;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     margin-bottom: 3rem;
-  }
-
-  &__card {
-    transition: transform 0.25s;
-
-    &:hover {
-      transform: scale(1.01);
-    }
   }
 }

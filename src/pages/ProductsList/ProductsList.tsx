@@ -7,10 +7,13 @@ import SearchBar from 'components/SearchBar';
 import { debounce } from 'utils/debounce';
 import ProductsCards from './ProductsCards';
 import { ProductListStore } from 'entities/product/stores/ProductListStore';
+import { ShoppingListStore } from 'entities/product/stores/ShoppingListStore';
+import { ProductModel } from 'entities/product/model';
 
 const ProductsList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const productListStore = useLocalObservable(() => new ProductListStore());
+  const shoppingListStore = useLocalObservable(() => new ShoppingListStore());
   const [localSearch, setLocalSearch] = useState('');
 
   useEffect(() => {
@@ -43,6 +46,13 @@ const ProductsList: React.FC = observer(() => {
     [setSearchParams],
   );
 
+  const handleCardClick = useCallback(
+    (product: ProductModel) => {
+      shoppingListStore.toggleShop(product);
+    },
+    [shoppingListStore],
+  );
+
   return (
     <div className={styles.categories__wrapper}>
       <div className={styles.categories__header}>
@@ -61,6 +71,10 @@ const ProductsList: React.FC = observer(() => {
         error={productListStore.error}
         pagination={productListStore.pagination}
         onPageChange={onPageChange}
+        handleCardClick={handleCardClick}
+        isShop={(id) => {
+          return shoppingListStore.isShop(id) ? 'Remove' : 'Add';
+        }}
       />
     </div>
   );

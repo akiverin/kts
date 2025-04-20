@@ -26,6 +26,10 @@ export class ProductModel {
     return this.data.discountPercent;
   }
 
+  get images() {
+    return this.data.images;
+  }
+
   get oldPrice() {
     return `${Math.round(this.data.price / (1 - this.data.discountPercent / 100))} $`;
   }

@@ -10,6 +10,7 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  images?: { url: string }[];
 }
 
 export interface ProductListResponse {

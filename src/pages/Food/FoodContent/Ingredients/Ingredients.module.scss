@@ -9,15 +9,23 @@
     position: relative;
   }
 
+  &__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 200px;
+    margin-top: 8px;
+  }
+
   &__item {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: $space-m;
     max-width: 273px;
   }
 
   &__grid {
-    margin-top: 24px;
+    margin-top: $space-xl;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px 29px;
