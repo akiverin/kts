@@ -1,9 +1,19 @@
 .timeInputs {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   gap: 1rem;
 
   & div {
     max-width: 160px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .timeInputs {
+    & div {
+      max-width: calc(50% - 1rem);
+      width: 100%;
+    }
   }
 }

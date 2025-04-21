@@ -4,7 +4,6 @@ import Text from 'components/Text';
 import Button from 'components/Button';
 import styles from './RegistrationPage.module.scss';
 import { UserStore } from 'entities/user/stores/UserStore';
-import Loader from 'components/Loader';
 import Input from 'components/Input';
 import { Link } from 'react-router';
 
@@ -66,13 +65,14 @@ const RegistrationPage: React.FC = observer(() => {
               placeholder="Enter your password"
             />
           </div>
-          {userStore.meta === 'loading' && <Loader />}
           {userStore.meta === 'error' && (
             <Text view="p-16" color="accent">
               {userStore.error}
             </Text>
           )}
-          <Button type="submit">Register</Button>
+          <Button type="submit" loading={userStore.meta === 'loading'}>
+            Register
+          </Button>
         </form>
       </div>
     </div>

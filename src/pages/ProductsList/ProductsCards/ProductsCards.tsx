@@ -24,7 +24,7 @@ const ProductsCards: React.FC<ProductsCardsProps> = observer(
   ({ isShop, meta, error, products, pagination, onPageChange, handleCardClick }) => {
     if (meta === Meta.loading) {
       return (
-        <div className={styles.loader}>
+        <div className="loader">
           <Text view="title" weight="bold">
             Loading...
           </Text>

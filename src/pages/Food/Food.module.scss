@@ -17,9 +17,10 @@
   }
 
   &__wrapper {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 49px 100px 0;
+    @include wrapper;
+    & {
+      padding-top: 50px;
+    }
   }
 
   &__controls {

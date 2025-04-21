@@ -38,6 +38,7 @@
 
   &__filters {
     display: flex;
+    flex-wrap: wrap;
     gap: $space-m;
     margin-bottom: $space-xl;
     align-items: center;

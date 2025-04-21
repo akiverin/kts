@@ -2,11 +2,13 @@
   background-color: $white;
 
   &__wrapper {
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     @include wrapper;
+    & {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   &__map {

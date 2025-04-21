@@ -1,18 +1,13 @@
-export function debounce<T extends (...args: unknown[]) => void>(
-  fn: T,
-  delay: number = 300,
-): (...args: Parameters<T>) => void {
-  let timer: number;
+export const debounce = <F extends (...args: unknown[]) => unknown>(func: F, waitFor: number) => {
+  let timeout: NodeJS.Timeout;
 
-  return (...args: Parameters<T>) => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    timer = window.setTimeout(() => {
-      fn(...args);
-    }, delay);
+  const debounced = (...args: Parameters<F>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
   };
-}
+
+  return debounced;
+};
 
 export function debounceNumberInput(fn: (value: number | null) => void, delay = 300): (value: number | null) => void {
   let timer: ReturnType<typeof setTimeout> | null = null;

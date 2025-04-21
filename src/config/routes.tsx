@@ -1,55 +1,38 @@
-import { RouteObject } from 'react-router';
-import App from '../App';
-import Foods from '../pages/Foods';
-import Food from '../pages/Food';
-import CategoriesList from '../pages/CategoriesList';
-import FavoritesList from '../pages/FavoritesList';
-import LoginPage from '../pages/LoginPage';
-import RegistrationPage from '../pages/RegistrationPage';
-import Profile from '../pages/Profile';
-import ProductsList from '../pages/ProductsList';
-
-export const routesConfig: RouteObject[] = [
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        path: '/',
-        element: <Foods />,
-      },
-      {
-        path: '/foods',
-        element: <Foods />,
-      },
-      {
-        path: '/foods/:documentId',
-        element: <Food />,
-      },
-      {
-        path: '/categories',
-        element: <CategoriesList />,
-      },
-      {
-        path: '/products',
-        element: <ProductsList />,
-      },
-      {
-        path: '/favorites',
-        element: <FavoritesList />,
-      },
-      {
-        path: '/login',
-        element: <LoginPage />,
-      },
-      {
-        path: '/register',
-        element: <RegistrationPage />,
-      },
-      {
-        path: '/profile',
-        element: <Profile />,
-      },
-    ],
+export const routes = {
+  main: {
+    mask: '/',
+    create: () => '/',
   },
-];
+  foods: {
+    mask: '/foods',
+    create: () => '/foods',
+  },
+  food: {
+    mask: '/foods/:documentId',
+    create: (documentId: string) => `/foods/${documentId}`,
+  },
+  categories: {
+    mask: '/categories',
+    create: () => '/categories',
+  },
+  products: {
+    mask: '/products',
+    create: () => '/products',
+  },
+  favorites: {
+    mask: '/favorites',
+    create: () => '/favorites',
+  },
+  login: {
+    mask: '/login',
+    create: () => '/login',
+  },
+  register: {
+    mask: '/register',
+    create: () => '/register',
+  },
+  profile: {
+    mask: '/profile',
+    create: () => '/profile',
+  },
+};

@@ -1,8 +1,10 @@
 .categories {
   &__wrapper {
     @include wrapper;
-    padding-top: 50px;
-    padding-bottom: $space-l;
+    & {
+      padding-top: 50px;
+      padding-bottom: $space-l;
+    }
   }
 
   &__header {
