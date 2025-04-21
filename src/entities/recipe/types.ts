@@ -1,3 +1,4 @@
+import { ProductModel } from 'entities/product/model';
 import { ApiResponse } from 'types/apiResponse';
 
 export type Recipe = {
@@ -35,7 +36,7 @@ export type RecipeDetails = {
   };
   directions: Array<{ description: string }>;
   equipments: Array<{ name: string }>;
-  ingradients: Array<{ name: string; amount: number; unit: string }>;
+  ingradients: ProductModel[];
   summary: string;
   vegetarian: boolean;
 };

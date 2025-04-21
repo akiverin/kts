@@ -9,11 +9,12 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: $breakpoint-xs) {
   .timeInputs {
-    & div {
+    & > div {
       max-width: calc(50% - 1rem);
       width: 100%;
+      flex: 0 0 auto;
     }
   }
 }

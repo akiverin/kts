@@ -4,7 +4,7 @@ import styles from './FoodContent.module.scss';
 import Text from 'components/Text';
 import Loader from 'components/Loader';
 import ArrowLeft from 'components/icons/ArrowLeft';
-import Summary from './Summary';
+import Summary from '../../../components/Summary';
 import Ingredients from './Ingredients/Ingredients';
 import Directions from './Directions/Directions';
 import { RecipeStore } from 'entities/recipe/stores/RecipeStore';
@@ -73,7 +73,7 @@ const FoodContent: React.FC<Props> = ({ food, meta, error, navigate }) => {
         </div>
 
         <div className={styles.food__desc}>
-          <Summary>{food.summary}</Summary>
+          <Summary isDesc={false}>{food.summary}</Summary>
         </div>
 
         <Ingredients equipment={food.equipment} ingredients={food.ingredients} />

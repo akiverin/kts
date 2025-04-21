@@ -1,11 +1,16 @@
 import { makeAutoObservable } from 'mobx';
 import { PaginationT } from '../types';
 
+const DEFAULT_PAGE_SIZE = 9;
+const DEFAULT_PAGE = 1;
+const DEFAULT_PAGE_COUNT = 1;
+const DEFAULT_TOTAL = 0;
+
 export class PaginationStore {
-  page = 1;
-  pageSize = 9;
-  pageCount = 1;
-  total = 0;
+  page: number = DEFAULT_PAGE;
+  pageSize: number = DEFAULT_PAGE_SIZE;
+  pageCount: number = DEFAULT_PAGE_COUNT;
+  total: number = DEFAULT_TOTAL;
 
   constructor() {
     makeAutoObservable(this);
@@ -36,9 +41,9 @@ export class PaginationStore {
   }
 
   reset() {
-    this.page = 1;
-    this.pageSize = 9;
-    this.pageCount = 1;
-    this.total = 0;
+    this.page = DEFAULT_PAGE;
+    this.pageSize = DEFAULT_PAGE_SIZE;
+    this.pageCount = DEFAULT_PAGE_COUNT;
+    this.total = DEFAULT_TOTAL;
   }
 }

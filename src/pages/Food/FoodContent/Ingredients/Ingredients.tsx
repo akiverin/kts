@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Text from 'components/Text';
 import DishIcon from 'components/icons/Dish';
 import EquipmentIcon from 'components/icons/Equipment';
 import styles from './Ingredients.module.scss';
 import Input from 'components/Input';
+import { ShoppingListStore } from 'entities/product/stores/ShoppingListStore';
+import { useLocalObservable } from 'mobx-react-lite';
+import { ProductModel } from 'entities/product/model';
 
-type Ingredient = { name: string; amount: number; unit: string };
 type Equipment = { name: string };
 
 type IngredientsProps = {
   equipment: Equipment[];
-  ingredients: Ingredient[];
+  ingredients: ProductModel[];
 };
 
 const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => {
+  const shoppingListStore = useLocalObservable(() => new ShoppingListStore());
   const [person, setPerson] = useState<number>(1);
+  const handleProductClick = useCallback(
+    (product: ProductModel) => {
+      console.log(product);
+
+      shoppingListStore.toggleShop(product);
+    },
+    [shoppingListStore],
+  );
   return (
     <div className={styles.ingredients}>
       <div className={styles.ingredients__section}>
@@ -23,7 +34,7 @@ const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => 
         </Text>
         <div className={styles.ingredients__head}>
           <Text view="p-16">Number of people</Text>
-          <Input type="number" value={person.toString()} onChange={(value) => setPerson(+value)} />
+          <Input type="number" min={1} value={person.toString()} onChange={(value) => setPerson(+value)} />
         </div>
         <div className={styles.ingredients__grid}>
           {ingredients.map((item, index) => (
@@ -35,6 +46,9 @@ const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => 
                   {(item.amount * person).toFixed(2)} {item.unit}
                 </Text>
               </div>
+              <button className={styles.ingredients__button} onClick={() => handleProductClick(item)}>
+                Add
+              </button>
             </div>
           ))}
           <svg

@@ -12,6 +12,7 @@ import Pagination from 'components/Paganation';
 import timeIcon from 'assets/timeIcon.svg';
 import { FavoritesStore } from 'entities/recipe/stores/FavoritesStore';
 import { observer, useLocalObservable } from 'mobx-react-lite';
+import Summary from '../../../../components/Summary';
 
 interface Props {
   recipes: RecipeListStore['recipes'];
@@ -65,7 +66,7 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
               <Card
                 image={recipe.images[0].url || ''}
                 title={recipe.name}
-                subtitle={recipe.summary}
+                subtitle={<Summary>{recipe.summary}</Summary>}
                 contentSlot={`${recipe.calories} kcal`}
                 actionSlot={
                   <Button onClick={(event) => handleSaveClick(event, recipe)}>

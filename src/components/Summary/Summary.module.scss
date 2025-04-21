@@ -1,10 +1,12 @@
 .summary {
   &__text {
     display: contents;
+    color: currentColor;
   }
 
   &__link {
     color: $text-primary;
     text-decoration: underline;
+    color: currentColor;
   }
 }

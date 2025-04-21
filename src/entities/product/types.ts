@@ -1,16 +1,9 @@
 export interface Product {
   id: number;
-  documentId: string;
-  title: string;
-  description: string;
-  price: number;
-  discountPercent: number;
-  rating: number;
+  name: string;
+  amount: number;
+  unit: string;
   isInStock: boolean;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  images?: { url: string }[];
 }
 
 export interface ProductListResponse {

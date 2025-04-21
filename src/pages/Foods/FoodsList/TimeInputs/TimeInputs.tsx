@@ -17,7 +17,6 @@ const TimeInputs: React.FC<TimeInputsProps> = ({ totalTime, cookingTime, prepara
     preparationTime !== null ? preparationTime.toString() : '',
   );
 
-  // Обновление локальных состояний при изменении props извне
   useEffect(() => setLocalTotalTime(totalTime !== null ? totalTime.toString() : ''), [totalTime]);
   useEffect(() => setLocalCookingTime(cookingTime !== null ? cookingTime.toString() : ''), [cookingTime]);
   useEffect(
@@ -25,7 +24,6 @@ const TimeInputs: React.FC<TimeInputsProps> = ({ totalTime, cookingTime, prepara
     [preparationTime],
   );
 
-  // Дебаунс-функции для каждого типа времени
   const debouncedHandlers = useMemo(
     () => ({
       totalTime: debounceNumberInput((value) => onTimeChange('totalTime', value), 500),

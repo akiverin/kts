@@ -40,11 +40,54 @@
     display: flex;
     align-items: center;
     gap: $space-m;
+    padding: 0;
   }
 
   &__actions {
     display: flex;
     align-items: center;
     gap: 17px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .header__map {
+    gap: 40px;
+  }
+
+  .header__link-logo {
+    gap: $space-m;
+  }
+
+  .header__actions {
+    gap: 10px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-m) {
+  .header__map {
+    gap: 20px;
+  }
+
+  .header__link-logo {
+    gap: $space-s;
+  }
+
+  .header__actions {
+    gap: 5px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-s) {
+  .header__map {
+    gap: 2px;
+  }
+
+  .header__link-logo {
+    gap: $space-xs;
+  }
+
+  .header__actions {
+    gap: 5px;
   }
 }

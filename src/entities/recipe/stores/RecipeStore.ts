@@ -4,48 +4,53 @@ import { RecipeDetails } from '../types';
 import { Meta } from 'utils/meta';
 import { RecipeDetailsModel } from '../model';
 import { LoadResponse } from 'types/loadResponse';
+import { errorMessage, isCancelError } from 'utils/errors';
 
 export class RecipeStore {
   recipe: RecipeDetailsModel | null = null;
   meta: Meta = Meta.initial;
   error: string = '';
-  private _currentRequest: Promise<LoadResponse> | null = null;
+  private _recipeAbortController: AbortController | null = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
   async fetchRecipe(documentId: string): Promise<LoadResponse> {
-    if (this._currentRequest) {
-      return this._currentRequest;
+    if (this._recipeAbortController) {
+      this._recipeAbortController.abort();
     }
+
+    this._recipeAbortController = new AbortController();
+    const signal = this._recipeAbortController.signal;
+
     this.meta = Meta.loading;
-    this._currentRequest = (async () => {
-      try {
-        const data: RecipeDetails = await getRecipeById(documentId);
-        const recipeModel = new RecipeDetailsModel(data);
 
-        runInAction(() => {
-          this.recipe = recipeModel;
-          this.meta = Meta.success;
-        });
-        return { success: true };
-      } catch (error) {
-        runInAction(() => {
-          this.error = 'Error loading recipe';
-          this.meta = Meta.error;
-        });
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      } finally {
-        runInAction(() => {
-          this._currentRequest = null;
-        });
+    try {
+      const data: RecipeDetails = await getRecipeById(documentId, signal);
+      const recipeModel = new RecipeDetailsModel(data);
+
+      runInAction(() => {
+        this.recipe = recipeModel;
+        this.meta = Meta.success;
+      });
+      return { success: true };
+    } catch (error) {
+      if (isCancelError(error)) {
+        return { success: false };
       }
-    })();
-
-    return this._currentRequest;
+      runInAction(() => {
+        this.error = 'Error loading recipe';
+        this.meta = Meta.error;
+      });
+      return {
+        success: false,
+        error: errorMessage(error),
+      };
+    } finally {
+      runInAction(() => {
+        this._recipeAbortController = null;
+      });
+    }
   }
 }

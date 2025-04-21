@@ -6,36 +6,16 @@ export class ProductModel {
     return this.data.id;
   }
 
-  get documentId() {
-    return this.data.documentId;
-  }
-
   get name() {
-    return this.data.title;
+    return this.data.name;
   }
 
-  get desc() {
-    return this.data.description;
+  get amount() {
+    return this.data.amount;
   }
 
-  get price() {
-    return `${this.data.price} $`;
-  }
-
-  get discountPercent() {
-    return this.data.discountPercent;
-  }
-
-  get images() {
-    return this.data.images;
-  }
-
-  get oldPrice() {
-    return `${Math.round(this.data.price / (1 - this.data.discountPercent / 100))} $`;
-  }
-
-  get rating() {
-    return this.data.rating;
+  get unit() {
+    return this.data.unit;
   }
 
   get isInStock() {

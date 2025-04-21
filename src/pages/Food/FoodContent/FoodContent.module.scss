@@ -44,6 +44,7 @@
     width: 100%;
     object-fit: cover;
     max-height: 298px;
+    margin-right: 20px;
     border-radius: $border-radius;
   }
 
@@ -69,6 +70,7 @@
     flex-direction: column;
     align-items: center;
     gap: $space-xxs;
+    text-align: center;
   }
 
   &__desc {
@@ -76,5 +78,39 @@
     padding: 36px;
     color: $text-primary;
     border-radius: $border-radius;
+  }
+}
+
+@media screen and (max-width: $breakpoint-x) {
+  .food {
+    &__list {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 24px;
+      column-gap: 48px;
+    }
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .food {
+    &__image {
+      margin-right: 0;
+    }
+
+    &__list {
+      width: 100%;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      column-gap: 24px;
+      margin-top: 40px;
+    }
+
+    &__info {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__desc {
+      padding: 24px;
+    }
   }
 }

@@ -1,27 +1,26 @@
 import React from 'react';
 import Text from 'components/Text';
 import Loader from 'components/Loader';
+import Button from 'components/Button';
 import { Meta } from 'utils/meta';
 import Pagination from 'components/Paganation';
 import styles from './ProductsCards.module.scss';
-import { ProductListStore } from 'entities/product/stores/ProductListStore';
-import ProductCard from './ProductCard';
-import Button from 'components/Button';
 import { ProductModel } from 'entities/product/model';
 import { observer } from 'mobx-react-lite';
+import { PaginationStore } from 'entities/pagination/stores/PaginationStore';
+import ProductCard from './ProductCard';
 
 interface ProductsCardsProps {
-  isShop: (id: string) => string;
-  products: ProductListStore['products'];
-  meta: ProductListStore['meta'];
-  error: ProductListStore['error'];
-  pagination: ProductListStore['pagination'];
+  products: ProductModel[];
+  meta: Meta;
+  error: string;
+  pagination: PaginationStore;
   onPageChange: (page: number) => void;
   handleCardClick?: (product: ProductModel) => void;
 }
 
 const ProductsCards: React.FC<ProductsCardsProps> = observer(
-  ({ isShop, meta, error, products, pagination, onPageChange, handleCardClick }) => {
+  ({ products, meta, error, pagination, onPageChange, handleCardClick }) => {
     if (meta === Meta.loading) {
       return (
         <div className="loader">
@@ -41,13 +40,14 @@ const ProductsCards: React.FC<ProductsCardsProps> = observer(
       );
     }
 
-    if (products.length === 0) {
+    if (!products) {
       return (
         <Text view="title" weight="bold">
-          No categories found
+          No products found
         </Text>
       );
     }
+
     return (
       <>
         <div className={styles.products__grid}>
@@ -56,23 +56,11 @@ const ProductsCards: React.FC<ProductsCardsProps> = observer(
               key={product.id}
               className={styles.products__card}
               title={product.name}
-              images={product.images}
-              contentSlot={
-                <>
-                  <Text color="accent" weight="bold" view="p-18">
-                    {product.price}
-                  </Text>
-                  {product.price !== product.oldPrice && (
-                    <Text color="secondary" view="p-14">
-                      <s>{product.oldPrice}</s>
-                    </Text>
-                  )}
-                </>
-              }
-              desc={product.desc}
+              contentSlot={`${product.amount} ${product.unit}`}
+              desc={product.isInStock ? 'In stock' : 'Out of stock'}
               actionSlot={
                 <Button onClick={() => handleCardClick && handleCardClick(product)}>
-                  {isShop(product.documentId)}
+                  {product.isInStock ? 'Remove from shopping list' : 'Add to shopping list'}
                 </Button>
               }
             />

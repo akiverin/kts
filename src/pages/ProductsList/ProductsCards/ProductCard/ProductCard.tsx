@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import styles from './ProductCard.module.scss';
 import classNames from 'classnames';
 import Text from 'components/Text';
@@ -8,8 +8,6 @@ export type ProductCardProps = {
   className?: string;
   /** Слот над заголовком */
   captionSlot?: React.ReactNode;
-  /** Массив изображений карточки */
-  images?: { url: string }[];
   /** Заголовок карточки */
   title: React.ReactNode;
   /** Описание карточки */
@@ -24,7 +22,6 @@ export type ProductCardProps = {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   className,
-  images,
   captionSlot,
   title,
   desc,
@@ -32,42 +29,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   actionSlot,
   onClick,
 }) => {
-  const imageArray = images && images.length > 0 ? images : [];
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const handlePrev = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      setCurrentImageIndex((prev) => (prev - 1 + imageArray.length) % imageArray.length);
-    },
-    [imageArray.length],
-  );
-
-  const handleNext = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      setCurrentImageIndex((prev) => (prev + 1) % imageArray.length);
-    },
-    [imageArray.length],
-  );
-
   return (
     <div onClick={onClick} className={classNames(styles['product-card'], className)}>
-      {imageArray.length > 0 && (
-        <div className={styles['product-card__header']}>
-          <img src={imageArray[currentImageIndex].url} alt="Card image" className={styles['product-card__image']} />
-          {imageArray.length > 1 && (
-            <div className={styles.slider}>
-              <button type="button" onClick={handlePrev} className={styles.slider__button}>
-                &#8249;
-              </button>
-              <button type="button" onClick={handleNext} className={styles.slider__button}>
-                &#8250;
-              </button>
-            </div>
-          )}
-        </div>
-      )}
       <div className={styles['product-card__body']}>
         <div className={styles['product-card__info']}>
           {captionSlot}

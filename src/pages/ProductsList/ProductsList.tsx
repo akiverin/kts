@@ -6,13 +6,11 @@ import { observer, useLocalObservable } from 'mobx-react-lite';
 import SearchBar from 'components/SearchBar';
 import { debounce } from 'utils/debounce';
 import ProductsCards from './ProductsCards';
-import { ProductListStore } from 'entities/product/stores/ProductListStore';
 import { ShoppingListStore } from 'entities/product/stores/ShoppingListStore';
 import { ProductModel } from 'entities/product/model';
 
 const ProductsList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const productListStore = useLocalObservable(() => new ProductListStore());
   const shoppingListStore = useLocalObservable(() => new ShoppingListStore());
   const [localSearch, setLocalSearch] = useState('');
 
@@ -21,9 +19,9 @@ const ProductsList: React.FC = observer(() => {
     const page = parseInt(searchParams.get('page') || '1', 10);
 
     setLocalSearch(search);
-    productListStore.setSearchQuery(search);
-    productListStore.fetchProducts(page);
-  }, [productListStore, searchParams]);
+    shoppingListStore.setSearchQuery(search);
+    shoppingListStore.fetchProducts(page);
+  }, [shoppingListStore, searchParams]);
 
   const onSearch = useMemo(
     () =>
@@ -54,27 +52,27 @@ const ProductsList: React.FC = observer(() => {
   );
 
   return (
-    <div className={styles.categories__wrapper}>
-      <div className={styles.categories__header}>
+    <div className={styles.products__wrapper}>
+      <div className={styles.products__header}>
         <Text view="title" tag="h1" weight="bold">
           Products
         </Text>
+        <Text view="p-20" color="secondary">
+          Manage your shopping list. Add or remove products as needed.
+        </Text>
       </div>
 
-      <div className={styles.categories__controls}>
+      <div className={styles.products__controls}>
         <SearchBar placeholder="Search products" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
       </div>
 
       <ProductsCards
-        products={productListStore.products}
-        meta={productListStore.meta}
-        error={productListStore.error}
-        pagination={productListStore.pagination}
+        products={shoppingListStore.paginatedProducts}
+        meta={shoppingListStore.meta}
+        error={shoppingListStore.error}
+        pagination={shoppingListStore.pagination}
         onPageChange={onPageChange}
         handleCardClick={handleCardClick}
-        isShop={(id) => {
-          return shoppingListStore.isShop(id) ? 'Remove' : 'Add';
-        }}
       />
     </div>
   );

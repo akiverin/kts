@@ -7,6 +7,12 @@
 
   &__section {
     position: relative;
+    &:nth-child(1) {
+      flex: 4;
+    }
+    &:nth-child(2) {
+      flex: 3;
+    }
   }
 
   &__head {
@@ -27,7 +33,7 @@
   &__grid {
     margin-top: $space-xl;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px 29px;
   }
 
@@ -35,5 +41,26 @@
     position: absolute;
     top: 0;
     right: -50px;
+  }
+
+  &__button {
+    border: none;
+    background: none;
+    color: $brand;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    &:hover {
+      color: $brand-hover;
+    }
+    &:active {
+      color: $brand-active;
+    }
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .ingredients {
+    flex-direction: column;
+    gap: 40px;
   }
 }
