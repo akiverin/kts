@@ -93,7 +93,7 @@ const Header = () => {
           </nav>
         </div>
         <div className={styles.header__actions}>
-          <Link to="/">
+          <Link to="/favorites">
             <p className="visuallyHidden">Список сохраненных рецептов</p>
             <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
