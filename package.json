@@ -1,15 +1,15 @@
 {
-  "name": "kts-project",
+  "name": "kts",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://akiverin.github.io/kts-project",
+  "homepage": "https://akiverin.github.io/kts",
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
     "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --fix",
-    "build": "vite --mode production",
+    "build": "tsc -b && vite build",
     "predeploy": "pnpm build",
     "deploy": "gh-pages -d build"
   },
