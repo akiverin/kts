@@ -24,7 +24,7 @@ interface Props {
 
 const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagination, onPageChange }) => {
   const favoritesStore = useLocalObservable(() => new FavoritesStore());
-  const isSaved = (id: Recipe['documentId']) => favoritesStore.isFavorite(id);
+  const getIsSaved = React.useCallback((id: Recipe['documentId']) => favoritesStore.isFavorite(id), [favoritesStore]);
   const handleSaveClick = (e: React.MouseEvent, recipe: Recipe) => {
     e.preventDefault();
     e.stopPropagation();
@@ -70,7 +70,7 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
                 contentSlot={`${recipe.calories} kcal`}
                 actionSlot={
                   <Button onClick={(event) => handleSaveClick(event, recipe)}>
-                    {isSaved(recipe.documentId) ? 'Remove' : 'Save'}
+                    {getIsSaved(recipe.documentId) ? 'Remove' : 'Save'}
                   </Button>
                 }
                 captionSlot={

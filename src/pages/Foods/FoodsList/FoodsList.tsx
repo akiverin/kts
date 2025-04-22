@@ -39,14 +39,14 @@ const FoodsList: React.FC = observer(() => {
     recipeListStore.fetchAllCategories();
   }, [recipeListStore]);
 
-  const onSearch = () => {
+  const onSearch = useCallback(() => {
     const updatedParams: Record<string, string> = {
       ...Object.fromEntries(searchParams.entries()),
       search: localSearch,
       page: '1',
     };
     setSearchParams(updatedParams);
-  };
+  }, [localSearch, searchParams, setSearchParams]);
 
   const handleCategoryChange = useCallback(
     (value: OptionT | OptionT[]) => {
