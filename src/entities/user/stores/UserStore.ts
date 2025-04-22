@@ -18,8 +18,7 @@ export class UserStore {
   private _currentRegisterRequest: Promise<boolean> | null = null;
 
   constructor() {
-    makeAutoObservable(this);
-
+    makeAutoObservable(this, {}, { autoBind: true });
     const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
     const storedUser = localStorage.getItem(AUTH_USER_KEY);
     if (storedToken && storedUser) {
@@ -61,7 +60,7 @@ export class UserStore {
         const response: AuthResponse = await signIn(identifier, password);
         runInAction(() => {
           this.token = response.jwt;
-          this.user = new UserModel(response.user);
+          this.user = response.user;
           this.meta = Meta.success;
         });
 

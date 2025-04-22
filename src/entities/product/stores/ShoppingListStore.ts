@@ -1,172 +1,116 @@
-import { makeAutoObservable, reaction, computed } from 'mobx';
-import { ProductModel } from '../model';
+import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import { Meta } from 'utils/meta';
 import { PaginationStore } from 'entities/pagination/stores/PaginationStore';
 import { LoadResponse } from 'types/loadResponse';
+import { ProductModel } from '../model';
 import { Product } from '../types';
+import { errorMessage } from 'utils/errors';
 
-const SHOP_KEY = 'shoppingList';
+const STORAGE_KEY = 'shoppingList';
 
 export class ShoppingListStore {
   products: ProductModel[] = [];
-  filteredProducts: ProductModel[] = [];
-  meta: Meta = Meta.initial;
+  searchQuery = '';
+  meta = Meta.initial;
   error = '';
   pagination = new PaginationStore();
-  searchQuery = '';
 
   constructor() {
-    makeAutoObservable(this, {
-      paginatedProducts: computed,
-    });
-
-    // Загрузка данных из localStorage
+    makeAutoObservable(this);
     this.loadFromStorage();
 
-    // Реакция на изменения для сохранения в localStorage
+    // Сохранять изменения в localStorage при изменении списка продуктов
     reaction(
-      () => this.products.map((product) => product.name),
-      (productsData) => {
-        localStorage.setItem(SHOP_KEY, JSON.stringify(productsData));
-      },
-    );
-
-    // Реакция на изменения поиска или products
-    reaction(
-      () => [this.searchQuery, this.products.length],
-      () => {
-        this.filterProducts();
-        this.pagination.setPagination({
-          page: this.pagination.page,
-          pageSize: this.pagination.pageSize,
-          pageCount: Math.ceil(this.filteredProducts.length / this.pagination.pageSize),
-          total: this.filteredProducts.length,
-        });
+      () => this.products.map((p) => p.data),
+      (list) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch {
+          // игнорируем ошибки записи
+        }
       },
     );
   }
 
-  get paginatedProducts() {
-    const start = (this.pagination.page - 1) * this.pagination.pageSize;
-    const end = start + this.pagination.pageSize;
-    return this.filteredProducts.slice(start, end);
-  }
-
-  loadFromStorage() {
+  private loadFromStorage() {
     this.meta = Meta.loading;
     try {
-      const stored = localStorage.getItem(SHOP_KEY);
-      if (stored) {
-        const productsData: Product[] = JSON.parse(stored);
-        this.products = productsData.map((product) => new ProductModel(product));
-        this.filterProducts();
-        this.pagination.setPagination({
-          page: 1,
-          pageSize: this.pagination.pageSize,
-          pageCount: Math.ceil(this.filteredProducts.length / this.pagination.pageSize),
-          total: this.filteredProducts.length,
-        });
-        this.meta = Meta.success;
-      } else {
-        this.products = [];
-        this.filteredProducts = [];
-        this.pagination.setPagination({
-          page: 1,
-          pageSize: this.pagination.pageSize,
-          pageCount: 0,
-          total: 0,
-        });
-        this.meta = Meta.success;
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const items: Product[] = JSON.parse(raw);
+        this.products = items.map((data) => new ProductModel(data));
       }
-    } catch (error) {
-      console.error('Failed to parse shopping list from localStorage', error);
-      this.error = error instanceof Error ? error.message : 'Unknown error';
-      this.meta = Meta.error;
-    }
-  }
-
-  filterProducts() {
-    if (!this.searchQuery) {
-      this.filteredProducts = [...this.products];
-      return;
-    }
-
-    const query = this.searchQuery.toLowerCase();
-    this.filteredProducts = this.products.filter((product) => {
-      return product.name.toLowerCase().includes(query);
-    });
-  }
-
-  async fetchProducts(page = 1): Promise<LoadResponse> {
-    this.meta = Meta.loading;
-
-    try {
-      // Имитация задержки, как если бы это был API-запрос
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      this.pagination.setPagination({
-        ...this.pagination,
-        page,
-      });
       this.meta = Meta.success;
-      return { success: true };
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      this.error = errorMsg;
+    } catch (e) {
+      this.error = e instanceof Error ? e.message : 'Unknown error';
       this.meta = Meta.error;
-      return {
-        success: false,
-        error: errorMsg,
-      };
     }
+  }
+
+  /** Отфильтрованные (по поиску) */
+  get filteredProducts(): ProductModel[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    return q ? this.products.filter((p) => p.name.toLowerCase().includes(q)) : this.products;
+  }
+
+  /** Отфильтрованные + пагинация */
+  get paginatedProducts(): ProductModel[] {
+    const { page, pageSize } = this.pagination;
+    const start = (page - 1) * pageSize;
+    return this.filteredProducts.slice(start, start + pageSize);
   }
 
   setSearchQuery(query: string) {
     this.searchQuery = query;
+    this.pagination.setPage(1);
   }
 
-  addShop(product: ProductModel) {
-    if (!this.isShop(product.id.toString())) {
-      this.products.push(product);
-      this.filterProducts();
-      this.pagination.setPagination({
-        ...this.pagination,
-        pageCount: Math.ceil(this.filteredProducts.length / this.pagination.pageSize),
-        total: this.filteredProducts.length,
+  async fetchProducts(page = 1): Promise<LoadResponse> {
+    this.meta = Meta.loading;
+    try {
+      const total = this.filteredProducts.length;
+      const pageCount = Math.max(Math.ceil(total / this.pagination.pageSize), 1);
+      runInAction(() => {
+        this.pagination.setPagination({
+          page,
+          pageSize: this.pagination.pageSize,
+          total,
+          pageCount,
+        });
+        this.meta = Meta.success;
       });
+      return { success: true };
+    } catch (e) {
+      this.error = errorMessage(e);
+      this.meta = Meta.error;
+      return { success: false, error: errorMessage(e) };
     }
   }
 
-  removeShop(productId: string) {
-    this.products = this.products.filter((product) => product.id.toString() !== productId);
-    this.filterProducts();
-    this.pagination.setPagination({
-      ...this.pagination,
-      pageCount: Math.ceil(this.filteredProducts.length / this.pagination.pageSize),
-      total: this.filteredProducts.length,
-    });
+  addProduct(product: ProductModel) {
+    this.products.push(product);
+    this.pagination.setPage(1);
   }
 
-  isShop(productId: string): boolean {
-    return this.products.some((product) => product.id.toString() === productId);
+  removeProduct(id: string) {
+    this.products = this.products.filter((p) => p.id.toString() !== id);
+    this.pagination.setPage(1);
   }
 
-  toggleShop(product: ProductModel) {
-    if (this.isShop(product.id.toString())) {
-      this.removeShop(product.id.toString());
+  toggleProduct(product: Product) {
+    if (this.products.some((p) => p.id === product.id)) {
+      this.removeProduct(product.id.toString());
     } else {
-      this.addShop(product);
+      this.addProduct(new ProductModel(product));
     }
+  }
+
+  hasProduct(id: string): boolean {
+    return this.products.some((p) => p.id.toString() === id);
   }
 
   clearAll() {
     this.products = [];
-    this.filterProducts();
-    this.pagination.setPagination({
-      page: 1,
-      pageSize: this.pagination.pageSize,
-      pageCount: 0,
-      total: 0,
-    });
+    this.pagination.setPage(1);
   }
 }

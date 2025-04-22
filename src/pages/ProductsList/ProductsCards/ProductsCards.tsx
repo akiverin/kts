@@ -51,18 +51,13 @@ const ProductsCards: React.FC<ProductsCardsProps> = observer(
     return (
       <>
         <div className={styles.products__grid}>
-          {products.map((product) => (
+          {products.map((product: ProductModel) => (
             <ProductCard
               key={product.id}
               className={styles.products__card}
               title={product.name}
               contentSlot={`${product.amount} ${product.unit}`}
-              desc={product.isInStock ? 'In stock' : 'Out of stock'}
-              actionSlot={
-                <Button onClick={() => handleCardClick && handleCardClick(product)}>
-                  {product.isInStock ? 'Remove from shopping list' : 'Add to shopping list'}
-                </Button>
-              }
+              actionSlot={<Button onClick={() => handleCardClick && handleCardClick(product)}>Remove</Button>}
             />
           ))}
         </div>

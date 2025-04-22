@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import { useSearchParams, createSearchParams } from 'react-router';
 import styles from './ProductsList.module.scss';
 import Text from 'components/Text';
-import { useSearchParams } from 'react-router';
-import { observer, useLocalObservable } from 'mobx-react-lite';
 import SearchBar from 'components/SearchBar';
 import { debounce } from 'utils/debounce';
 import ProductsCards from './ProductsCards';
@@ -11,29 +11,36 @@ import { ProductModel } from 'entities/product/model';
 
 const ProductsList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const shoppingListStore = useLocalObservable(() => new ShoppingListStore());
-  const [localSearch, setLocalSearch] = useState('');
+  const store = useLocalObservable(() => new ShoppingListStore());
 
+  // Извлекаем параметры из URL
+  const searchParam = searchParams.get('search') ?? '';
+  const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
+
+  // Локальное состояние для инпута
+  const [localSearch, setLocalSearch] = useState<string>(searchParam);
+
+  // Синхронизируем input со строкой поиска
   useEffect(() => {
-    const search = searchParams.get('search') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
+    setLocalSearch(searchParam);
+    store.setSearchQuery(searchParam);
+  }, [searchParam, store]);
 
-    setLocalSearch(search);
-    shoppingListStore.setSearchQuery(search);
-    shoppingListStore.fetchProducts(page);
-  }, [shoppingListStore, searchParams]);
+  // Фетчим данные при изменении страницы
+  useEffect(() => {
+    store.fetchProducts(pageParam);
+  }, [pageParam, store]);
 
+  // Дебаунс для обновления URL-параметров поиска
   const onSearch = useMemo(
     () =>
       debounce(() => {
-        setSearchParams({
-          search: localSearch,
-          page: '1',
-        });
+        setSearchParams(createSearchParams({ search: localSearch, page: '1' }));
       }, 500),
     [localSearch, setSearchParams],
   );
 
+  // Обработка смены страницы
   const onPageChange = useCallback(
     (page: number) => {
       setSearchParams((prev) => {
@@ -44,11 +51,12 @@ const ProductsList: React.FC = observer(() => {
     [setSearchParams],
   );
 
+  // Тоггл товара в списке
   const handleCardClick = useCallback(
     (product: ProductModel) => {
-      shoppingListStore.toggleShop(product);
+      store.toggleProduct(product);
     },
-    [shoppingListStore],
+    [store],
   );
 
   return (
@@ -67,10 +75,10 @@ const ProductsList: React.FC = observer(() => {
       </div>
 
       <ProductsCards
-        products={shoppingListStore.paginatedProducts}
-        meta={shoppingListStore.meta}
-        error={shoppingListStore.error}
-        pagination={shoppingListStore.pagination}
+        products={store.paginatedProducts}
+        meta={store.meta}
+        error={store.error}
+        pagination={store.pagination}
         onPageChange={onPageChange}
         handleCardClick={handleCardClick}
       />

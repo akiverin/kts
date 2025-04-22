@@ -1,6 +1,6 @@
 import { Product } from './types';
 export class ProductModel {
-  constructor(private readonly data: Product) {}
+  constructor(readonly data: Product) {}
 
   get id() {
     return this.data.id;
@@ -20,5 +20,8 @@ export class ProductModel {
 
   get isInStock() {
     return this.data.isInStock;
+  }
+  get toJSON() {
+    return this.data;
   }
 }

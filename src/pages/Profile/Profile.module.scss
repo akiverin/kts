@@ -3,9 +3,7 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 64px);
-  max-width: 1440px;
-  padding: 0 100px;
-  margin: 0 auto;
+  @include wrapper;
 
   &__wrapper {
     background-color: $white;

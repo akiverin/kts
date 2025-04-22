@@ -5,8 +5,9 @@ import EquipmentIcon from 'components/icons/Equipment';
 import styles from './Ingredients.module.scss';
 import Input from 'components/Input';
 import { ShoppingListStore } from 'entities/product/stores/ShoppingListStore';
-import { useLocalObservable } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { ProductModel } from 'entities/product/model';
+import { Product } from 'entities/product/types';
 
 type Equipment = { name: string };
 
@@ -15,16 +16,18 @@ type IngredientsProps = {
   ingredients: ProductModel[];
 };
 
-const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => {
+const Ingredients: React.FC<IngredientsProps> = observer(({ equipment, ingredients }) => {
   const shoppingListStore = useLocalObservable(() => new ShoppingListStore());
   const [person, setPerson] = useState<number>(1);
   const handleProductClick = useCallback(
-    (product: ProductModel) => {
-      console.log(product);
-
-      shoppingListStore.toggleShop(product);
+    (product: Product) => {
+      const adjustedProduct = {
+        ...product,
+        amount: product.amount * person,
+      };
+      shoppingListStore.toggleProduct(adjustedProduct);
     },
-    [shoppingListStore],
+    [shoppingListStore, person],
   );
   return (
     <div className={styles.ingredients}>
@@ -47,7 +50,7 @@ const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => 
                 </Text>
               </div>
               <button className={styles.ingredients__button} onClick={() => handleProductClick(item)}>
-                Add
+                {shoppingListStore.hasProduct(item.id.toString()) ? 'Remove' : 'Add'}
               </button>
             </div>
           ))}
@@ -83,6 +86,6 @@ const Ingredients: React.FC<IngredientsProps> = ({ equipment, ingredients }) => 
       </div>
     </div>
   );
-};
+});
 
 export default Ingredients;
