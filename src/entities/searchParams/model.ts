@@ -27,7 +27,6 @@ export default class SearchParamsModel {
   }
 
   private updateURL() {
-    // Формируем объект URLSearchParams и вызываем updateParams с ним.
     const params = new URLSearchParams();
     if (this.search) params.set('search', this.search);
     if (this.category !== null) params.set('category', String(this.category));

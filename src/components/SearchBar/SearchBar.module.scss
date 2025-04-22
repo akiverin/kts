@@ -1,6 +1,12 @@
 .search {
   display: flex;
   align-items: center;
-  gap: 19px;
+  gap: 10px;
   width: 100%;
+}
+
+@media screen and (max-width: $breakpoint-m) {
+  .search {
+    gap: 10px;
+  }
 }

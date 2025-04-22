@@ -20,4 +20,12 @@ export const apiRoutes = {
   categories: {
     getAll: '/meal-categories',
   },
+  users: {
+    auth: '/auth/local',
+    register: '/auth/local/register',
+  },
+  products: {
+    getAll: '/products',
+    getById: (id: string) => `/products/${id}`,
+  },
 };

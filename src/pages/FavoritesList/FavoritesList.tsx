@@ -13,9 +13,13 @@ const FavoritesList: React.FC = observer(() => {
 
   if (favoritesStore.favorites.length === 0) {
     return (
-      <Text view="title" weight="bold">
-        No favorites found
-      </Text>
+      <div className={styles['foods-favorites']}>
+        <div className={styles['foods-favorites__wrapper']}>
+          <Text view="title" weight="bold">
+            No favorites found
+          </Text>
+        </div>
+      </div>
     );
   }
 

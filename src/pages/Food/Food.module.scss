@@ -1,12 +1,13 @@
 .food {
   position: relative;
   overflow: hidden;
+  padding-bottom: 80px;
 
   &__content {
     display: flex;
     flex-direction: column;
     gap: 48px;
-    margin: 37px 0 53px;
+    margin: 37px 0 80px;
   }
 
   &__pattern {
@@ -17,14 +18,15 @@
   }
 
   &__wrapper {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 49px 100px 0;
+    @include wrapper;
+    & {
+      padding-top: 50px;
+    }
   }
 
   &__controls {
     display: flex;
-    gap: 16px;
+    gap: $space-m;
     align-items: center;
   }
 

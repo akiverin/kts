@@ -5,49 +5,55 @@ import { getCategoryList } from '../api';
 import { Category } from '../types';
 import { PaginationStore } from 'entities/pagination/stores/PaginationStore';
 import { LoadResponse } from 'types/loadResponse';
-
+import { errorMessage, isCancelError } from 'utils/errors';
 export class CategoryListStore {
   categories: CategoryModel[] = [];
   meta: Meta = Meta.initial;
   error = '';
   pagination = new PaginationStore();
   searchQuery = '';
-  private _currentRequest: Promise<LoadResponse> | null = null;
+
+  private _abortController: AbortController | null = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
   async fetchCategories(page = 1): Promise<LoadResponse> {
-    if (this._currentRequest) {
-      return this._currentRequest;
+    if (this._abortController) {
+      this._abortController.abort();
     }
+
+    this._abortController = new AbortController();
+    const signal = this._abortController.signal;
+
     this.meta = Meta.loading;
-    this._currentRequest = (async () => {
-      try {
-        const response = await getCategoryList(page, this.pagination.pageSize, this.searchQuery || undefined);
-        runInAction(() => {
-          this.categories = response.data.map((c: Category) => new CategoryModel(c));
-          this.pagination.setPagination(response.meta.pagination);
-          this.meta = Meta.success;
-        });
-        return { success: true };
-      } catch (error) {
-        runInAction(() => {
-          this.error = error instanceof Error ? error.message : 'Unknown error';
-          this.meta = Meta.error;
-        });
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      } finally {
-        runInAction(() => {
-          this._currentRequest = null;
-        });
+
+    try {
+      const response = await getCategoryList(page, this.pagination.pageSize, this.searchQuery || undefined, signal);
+      runInAction(() => {
+        this.categories = response.data.map((c: Category) => new CategoryModel(c));
+        this.pagination.setPagination(response.meta.pagination);
+        this.meta = Meta.success;
+      });
+      return { success: true };
+    } catch (error) {
+      if (isCancelError(error)) {
+        return { success: false };
       }
-    })();
-    return this._currentRequest;
+      runInAction(() => {
+        this.error = errorMessage(error);
+        this.meta = Meta.error;
+      });
+      return {
+        success: false,
+        error: errorMessage(error),
+      };
+    } finally {
+      runInAction(() => {
+        this._abortController = null;
+      });
+    }
   }
 
   setSearchQuery(query: string) {

@@ -2,13 +2,13 @@
   background-color: $white;
 
   &__wrapper {
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 100px;
-    max-width: 1440px;
-    margin: 0 auto;
+    @include wrapper;
+    & {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   &__map {
@@ -21,7 +21,7 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: $space-l;
   }
 
   &__link {
@@ -40,11 +40,132 @@
     display: flex;
     align-items: center;
     gap: $space-m;
+    padding: 0;
   }
 
   &__actions {
     display: flex;
     align-items: center;
     gap: 17px;
+  }
+
+  &__icon-link {
+    color: $brand;
+    &:hover {
+      color: $brand-hover;
+    }
+    &:active {
+      color: $brand-active;
+    }
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .header__map {
+    gap: 40px;
+  }
+
+  .header__link-logo {
+    gap: $space-m;
+  }
+
+  .header__actions {
+    gap: 10px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-m) {
+  .header__map {
+    gap: 20px;
+  }
+
+  .header__link-logo {
+    gap: $space-s;
+  }
+
+  .header__actions {
+    gap: 5px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .header__map {
+    gap: 2px;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header__link-logo {
+    gap: $space-xs;
+  }
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 19px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  z-index: 100;
+
+  &__line {
+    width: 100%;
+    height: 3px;
+    background-color: $brand;
+    transition: 0.3s ease;
+  }
+
+  &_open .burger__line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  &_open .burger__line:nth-child(2) {
+    opacity: 0;
+  }
+  &_open .burger__line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+}
+
+@media screen and (max-width: $breakpoint-l) {
+  .burger {
+    display: flex;
+    margin-right: $space-s;
+  }
+
+  .header__navigate {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: $white;
+    flex-direction: column;
+    align-items: center;
+    padding: $space-l 0;
+    transform: translateY(-200%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 90;
+
+    &.active {
+      transform: translateY(0);
+    }
+  }
+
+  .header__nav-list {
+    flex-direction: column;
+    gap: $space-l;
+  }
+
+  .header__actions {
+    position: fixed;
+    bottom: $space-l;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $white;
+    padding: $space-s;
+    border-radius: 8px;
+    z-index: 95;
   }
 }

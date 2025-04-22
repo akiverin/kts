@@ -39,14 +39,14 @@ const FoodsList: React.FC = observer(() => {
     recipeListStore.fetchAllCategories();
   }, [recipeListStore]);
 
-  const onSearch = () => {
+  const onSearch = useCallback(() => {
     const updatedParams: Record<string, string> = {
       ...Object.fromEntries(searchParams.entries()),
       search: localSearch,
       page: '1',
     };
     setSearchParams(updatedParams);
-  };
+  }, [localSearch, searchParams, setSearchParams]);
 
   const handleCategoryChange = useCallback(
     (value: OptionT | OptionT[]) => {
@@ -117,9 +117,9 @@ const FoodsList: React.FC = observer(() => {
         <div className={styles['foods-list__actions']}>
           <div className={styles['foods-list__search']}>
             <SearchBar placeholder="Enter dishes" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
-            <RandomRecipeButton recipes={recipeListStore.recipes} />
           </div>
           <div className={styles['foods-list__filters']}>
+            <RandomRecipeButton recipes={recipeListStore.recipes} />
             <label className={styles['foods-list__vegetarian']}>
               <CheckBox
                 checked={recipeListStore.searchModel.vegetarian}
@@ -130,13 +130,9 @@ const FoodsList: React.FC = observer(() => {
               />
               <Text view="p-18">Vegetarian</Text>
             </label>
-            <TimeInputs
-              totalTime={recipeListStore.searchModel.totalTime}
-              cookingTime={recipeListStore.searchModel.cookingTime}
-              preparationTime={recipeListStore.searchModel.preparationTime}
-              onTimeChange={handleTimeChange}
-            />
+
             <DropdownRating
+              className={styles['foods-list__dropdown']}
               placeholder="Rating"
               value={selectedRating}
               options={RATING_OPTIONS}
@@ -147,11 +143,18 @@ const FoodsList: React.FC = observer(() => {
               }}
             />
             <DropdownCategory
+              className={styles['foods-list__dropdown']}
               placeholder="Categories"
               options={categoryOptions}
               value={selectedOptionCategory ? [selectedOptionCategory] : []}
               onChange={handleCategoryChange}
               getTitle={(values) => values[0]?.value || 'Categories'}
+            />
+            <TimeInputs
+              totalTime={recipeListStore.searchModel.totalTime}
+              cookingTime={recipeListStore.searchModel.cookingTime}
+              preparationTime={recipeListStore.searchModel.preparationTime}
+              onTimeChange={handleTimeChange}
             />
           </div>
         </div>

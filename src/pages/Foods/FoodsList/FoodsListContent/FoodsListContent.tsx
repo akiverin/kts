@@ -12,6 +12,7 @@ import Pagination from 'components/Paganation';
 import timeIcon from 'assets/timeIcon.svg';
 import { FavoritesStore } from 'entities/recipe/stores/FavoritesStore';
 import { observer, useLocalObservable } from 'mobx-react-lite';
+import Summary from '../../../../components/Summary';
 
 interface Props {
   recipes: RecipeListStore['recipes'];
@@ -23,7 +24,7 @@ interface Props {
 
 const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagination, onPageChange }) => {
   const favoritesStore = useLocalObservable(() => new FavoritesStore());
-  const isSaved = (id: Recipe['documentId']) => favoritesStore.isFavorite(id);
+  const getIsSaved = React.useCallback((id: Recipe['documentId']) => favoritesStore.isFavorite(id), [favoritesStore]);
   const handleSaveClick = (e: React.MouseEvent, recipe: Recipe) => {
     e.preventDefault();
     e.stopPropagation();
@@ -31,12 +32,12 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
   };
   if (meta === Meta.loading || meta === Meta.initial) {
     return (
-      <>
+      <div className="loader">
         <Text view="title" weight="bold">
           Loading...
         </Text>
         <Loader />
-      </>
+      </div>
     );
   }
 
@@ -63,13 +64,13 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
           <li key={recipe.documentId} className={styles['foods-list__item']}>
             <Link to={`/foods/${recipe.documentId}`}>
               <Card
-                image={recipe.images[0]?.url || ''}
+                image={recipe.images[0].url || ''}
                 title={recipe.name}
-                subtitle={recipe.summary}
+                subtitle={<Summary>{recipe.summary}</Summary>}
                 contentSlot={`${recipe.calories} kcal`}
                 actionSlot={
                   <Button onClick={(event) => handleSaveClick(event, recipe)}>
-                    {isSaved(recipe.documentId) ? 'Remove' : 'Save'}
+                    {getIsSaved(recipe.documentId) ? 'Remove' : 'Save'}
                   </Button>
                 }
                 captionSlot={
