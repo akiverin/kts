@@ -1,6 +1,7 @@
 import { api, apiRoutes } from 'config/api';
 import { formatApiError } from 'utils/errors';
 import { AuthResponse } from './types';
+import axios from 'axios';
 
 /**
  * Функция для авторизации пользователя.
@@ -12,6 +13,12 @@ export const signIn = async (identifier: string, password: string): Promise<Auth
     const response = await api.post<AuthResponse>(apiRoutes.users.auth, payload);
     return response.data;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const apiMessage = error.response?.data?.error?.message;
+      if (apiMessage) {
+        throw new Error(apiMessage);
+      }
+    }
     throw new Error(formatApiError('signIn', error));
   }
 };
@@ -26,6 +33,12 @@ export const register = async (username: string, email: string, password: string
     const response = await api.post<AuthResponse>(apiRoutes.users.register, payload);
     return response.data;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const apiMessage = error.response?.data?.error?.message;
+      if (apiMessage) {
+        throw new Error(apiMessage);
+      }
+    }
     throw new Error(formatApiError('register', error));
   }
 };
