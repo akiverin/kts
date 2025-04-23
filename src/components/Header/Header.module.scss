@@ -7,14 +7,13 @@
       height: 64px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
     }
   }
 
   &__map {
     display: flex;
     align-items: center;
-    gap: 80px;
+    margin-right: 80px;
   }
 
   &__link-logo {
@@ -47,6 +46,7 @@
     display: flex;
     align-items: center;
     gap: 17px;
+    margin-left: auto;
   }
 
   &__icon-link {
@@ -60,9 +60,24 @@
   }
 }
 
+@media screen and (max-width: $breakpoint-x) {
+  .header__map {
+    margin-right: 40px;
+  }
+
+  .header__link-logo {
+    gap: $space-m;
+  }
+
+  .header__actions {
+    gap: 10px;
+  }
+}
+
 @media screen and (max-width: $breakpoint-l) {
   .header__map {
     gap: 40px;
+    margin: 0;
   }
 
   .header__link-logo {
@@ -90,7 +105,6 @@
 
 @media screen and (max-width: $breakpoint-l) {
   .header__map {
-    gap: 2px;
     justify-content: space-between;
     width: 100%;
   }
@@ -101,6 +115,7 @@
 }
 
 .burger {
+  cursor: pointer;
   display: none;
   flex-direction: column;
   justify-content: space-between;
@@ -163,6 +178,7 @@
     bottom: $space-l;
     left: 50%;
     transform: translateX(-50%);
+    gap: $space-l;
     background: $white;
     padding: $space-s;
     border-radius: 8px;

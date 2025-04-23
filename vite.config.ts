@@ -3,18 +3,16 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import tsconfig from './tsconfig.json';
 
-const SRC_PATH = path.resolve(__dirname, 'src');
-
 const parseTsConfigPaths = (paths: Record<string, string[]>): Record<string, string> => {
-  const webpackConfigAliases: Record<string, string> = {};
+  const aliases: Record<string, string> = {};
 
-  Object.entries(paths).forEach(([alias, paths]) => {
-    const aliasPath = paths[0].replace(/[^a-zA-Z]/g, '');
+  for (const [key, [target]] of Object.entries(paths)) {
+    const cleanKey = key.replace('/*', '');
+    const cleanTarget = target.replace('/*', '');
+    aliases[cleanKey] = path.resolve(__dirname, 'src', cleanTarget);
+  }
 
-    webpackConfigAliases[alias] = path.join(SRC_PATH, aliasPath);
-  });
-
-  return webpackConfigAliases;
+  return aliases;
 };
 
 export default defineConfig({

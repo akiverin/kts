@@ -24,16 +24,11 @@
     }
   }
 
-  &__controls {
-    display: flex;
-    gap: $space-m;
-    align-items: center;
-  }
-
   &__back {
     background: none;
     border: none;
     cursor: pointer;
+    display: none;
   }
 
   &__info {
