@@ -5,19 +5,21 @@ import Button from 'components/Button';
 import styles from './RegistrationPage.module.scss';
 import { UserStore } from 'entities/user/stores/UserStore';
 import Input from 'components/Input';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const RegistrationPage: React.FC = observer(() => {
   const userStore = useLocalObservable(() => new UserStore());
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const success = await userStore.register(username, email, password);
     if (success) {
-      window.location.href = '/';
+      navigate('/');
+      navigate(0);
     }
   };
 

@@ -2,36 +2,52 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useSearchParams, createSearchParams } from 'react-router';
 import styles from './ProductsList.module.scss';
+
 import Text from 'components/Text';
 import SearchBar from 'components/SearchBar';
-import { debounce } from 'utils/debounce';
 import ProductsCards from './ProductsCards';
+import { debounce } from 'utils/debounce';
 import { ShoppingListStore } from 'entities/product/stores/ShoppingListStore';
 import { ProductModel } from 'entities/product/model';
+
+const Wrapper: React.FC<{ title: string; subtitle?: string; children?: React.ReactNode }> = ({
+  title,
+  subtitle,
+  children,
+}) => (
+  <div className={styles.products__wrapper}>
+    <div className={styles.products__header}>
+      <Text view="title" tag="h1" weight="bold">
+        {title}
+      </Text>
+      {subtitle && (
+        <Text view="p-20" color="secondary">
+          {subtitle}
+        </Text>
+      )}
+      {children}
+    </div>
+  </div>
+);
 
 const ProductsList: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const store = useLocalObservable(() => new ShoppingListStore());
 
-  // Извлекаем параметры из URL
   const searchParam = searchParams.get('search') ?? '';
   const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
 
-  // Локальное состояние для инпута
   const [localSearch, setLocalSearch] = useState<string>(searchParam);
 
-  // Синхронизируем input со строкой поиска
   useEffect(() => {
     setLocalSearch(searchParam);
     store.setSearchQuery(searchParam);
   }, [searchParam, store]);
 
-  // Фетчим данные при изменении страницы
   useEffect(() => {
     store.fetchProducts(pageParam);
   }, [pageParam, store]);
 
-  // Дебаунс для обновления URL-параметров поиска
   const onSearch = useMemo(
     () =>
       debounce(() => {
@@ -40,7 +56,6 @@ const ProductsList: React.FC = observer(() => {
     [localSearch, setSearchParams],
   );
 
-  // Обработка смены страницы
   const onPageChange = useCallback(
     (page: number) => {
       setSearchParams((prev) => {
@@ -51,7 +66,6 @@ const ProductsList: React.FC = observer(() => {
     [setSearchParams],
   );
 
-  // Тоггл товара в списке
   const handleCardClick = useCallback(
     (product: ProductModel) => {
       store.toggleProduct(product);
@@ -59,17 +73,20 @@ const ProductsList: React.FC = observer(() => {
     [store],
   );
 
-  return (
-    <div className={styles.products__wrapper}>
-      <div className={styles.products__header}>
-        <Text view="title" tag="h1" weight="bold">
-          Products
-        </Text>
-        <Text view="p-20" color="secondary">
-          Manage your shopping list. Add or remove products as needed.
-        </Text>
-      </div>
+  if (store.meta === 'loading') {
+    return <Wrapper title="Loading..." />;
+  }
 
+  if (store.meta === 'error') {
+    return <Wrapper title={`Error! ${store.error}`} subtitle="Unable to load products. Please try again later." />;
+  }
+
+  if (store.products.length === 0) {
+    return <Wrapper title="No products found!" subtitle="Add product to your shopping list from recipes." />;
+  }
+
+  return (
+    <Wrapper title="Products" subtitle="Manage your shopping list. Add or remove products as needed.">
       <div className={styles.products__controls}>
         <SearchBar placeholder="Search products" value={localSearch} onChange={setLocalSearch} onSearch={onSearch} />
       </div>
@@ -82,7 +99,7 @@ const ProductsList: React.FC = observer(() => {
         onPageChange={onPageChange}
         handleCardClick={handleCardClick}
       />
-    </div>
+    </Wrapper>
   );
 });
 
