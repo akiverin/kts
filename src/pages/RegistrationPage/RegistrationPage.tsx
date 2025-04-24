@@ -3,7 +3,7 @@ import { observer, useLocalObservable } from 'mobx-react-lite';
 import Text from 'components/Text';
 import Button from 'components/Button';
 import styles from './RegistrationPage.module.scss';
-import { UserStore } from 'entities/user/stores/UserStore';
+import { userStore } from 'entities/user/stores/userStoreInstance';
 import Input from 'components/Input';
 import { Link, useNavigate } from 'react-router';
 import { RegisterFormStore } from 'entities/user/stores/RegisterFormStore';
@@ -11,7 +11,6 @@ import toast from 'react-hot-toast';
 
 const RegistrationPage: React.FC = observer(() => {
   const form = useLocalObservable(() => new RegisterFormStore());
-  const userStore = useLocalObservable(() => new UserStore());
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -3,15 +3,15 @@ import { observer, useLocalObservable } from 'mobx-react-lite';
 import Text from 'components/Text';
 import Button from 'components/Button';
 import styles from './LoginPage.module.scss';
-import { UserStore } from 'entities/user/stores/UserStore';
 import Input from 'components/Input';
 import { Link, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
+import { userStore } from 'entities/user/stores/userStoreInstance';
+
 import { LoginFormStore } from 'entities/user/stores/LoginFormStore';
 
 const LoginPage: React.FC = observer(() => {
   const form = useLocalObservable(() => new LoginFormStore());
-  const userStore = useLocalObservable(() => new UserStore());
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +26,7 @@ const LoginPage: React.FC = observer(() => {
     if (success) {
       toast.success('Welcome back!');
       navigate('/');
-      navigate(0);
+      // navigate(0);
     } else {
       toast.error(userStore.error || 'Login failed');
     }

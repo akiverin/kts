@@ -3,6 +3,7 @@ import { signIn, register } from '../api';
 import { AuthResponse, User } from '../types';
 import { Meta } from 'utils/meta';
 import { UserModel } from '../model';
+import { errorMessage, isCancelError } from 'utils/errors';
 
 const AUTH_TOKEN_KEY = 'authToken';
 const AUTH_USER_KEY = 'authUser';
@@ -14,30 +15,28 @@ export class UserStore {
   error: string = '';
 
   /** Полевые переменные для блокировки повторного запуска запроса */
-  private _currentLoginRequest: Promise<boolean> | null = null;
-  private _currentRegisterRequest: Promise<boolean> | null = null;
+  private _loginAbortController: AbortController | null = null;
+  private _registerAbortController: AbortController | null = null;
 
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
+    makeAutoObservable(this);
     const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
     const storedUser = localStorage.getItem(AUTH_USER_KEY);
     if (storedToken && storedUser) {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        this.token = storedToken;
-        this.user = new UserModel(parsedUser);
+        this.token = JSON.parse(storedToken);
+        this.user = new UserModel(JSON.parse(storedUser));
         this.meta = Meta.success;
       } catch {
         this.logout();
       }
     }
-
     reaction(
       () => [this.token, this.user],
-      ([token, user]) => {
-        if (token && user) {
-          localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(token));
-          localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+      ([t, u]) => {
+        if (t && u) {
+          localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(t));
+          localStorage.setItem(AUTH_USER_KEY, JSON.stringify(u));
         } else {
           localStorage.removeItem(AUTH_TOKEN_KEY);
           localStorage.removeItem(AUTH_USER_KEY);
@@ -51,33 +50,39 @@ export class UserStore {
    * При успешном ответе сохраняет jwt и данные пользователя.
    */
   async login(identifier: string, password: string): Promise<boolean> {
-    if (this._currentLoginRequest) {
-      return this._currentLoginRequest;
+    if (this._loginAbortController) {
+      this._loginAbortController.abort();
     }
-    this.meta = Meta.loading;
-    this._currentLoginRequest = (async () => {
-      try {
-        const response: AuthResponse = await signIn(identifier, password);
-        runInAction(() => {
-          this.token = response.jwt;
-          this.user = response.user;
-          this.meta = Meta.success;
-        });
 
-        return true;
-      } catch (error) {
-        runInAction(() => {
-          this.error = error instanceof Error ? error.message : 'Unknown error';
-          this.meta = Meta.error;
-        });
+    this._loginAbortController = new AbortController();
+    const signal = this._loginAbortController.signal;
+
+    this.meta = Meta.loading;
+
+    try {
+      const response: AuthResponse = await signIn(identifier, password, signal);
+
+      runInAction(() => {
+        this.token = response.jwt;
+        this.user = new UserModel(response.user);
+        this.meta = Meta.success;
+      });
+
+      return true;
+    } catch (error) {
+      if (isCancelError(error)) {
         return false;
-      } finally {
-        runInAction(() => {
-          this._currentLoginRequest = null;
-        });
       }
-    })();
-    return this._currentLoginRequest;
+      runInAction(() => {
+        this.error = errorMessage(error);
+        this.meta = Meta.error;
+      });
+      return false;
+    } finally {
+      runInAction(() => {
+        this._loginAbortController = null;
+      });
+    }
   }
 
   /**
@@ -85,32 +90,36 @@ export class UserStore {
    * При успешном ответе сохраняет jwt и данные пользователя.
    */
   async register(username: string, email: string, password: string): Promise<boolean> {
-    if (this._currentRegisterRequest) {
-      return this._currentRegisterRequest;
+    if (this._registerAbortController) {
+      this._registerAbortController.abort();
     }
+
+    this._registerAbortController = new AbortController();
+    const signal = this._registerAbortController.signal;
+
     this.meta = Meta.loading;
-    this._currentRegisterRequest = (async () => {
-      try {
-        const response: AuthResponse = await register(username, email, password);
-        runInAction(() => {
-          this.token = response.jwt;
-          this.user = new UserModel(response.user);
-          this.meta = Meta.success;
-        });
-        return true;
-      } catch (error) {
-        runInAction(() => {
-          this.error = error instanceof Error ? error.message : 'Unknown error';
-          this.meta = Meta.error;
-        });
+    try {
+      const response: AuthResponse = await register(username, email, password, signal);
+      runInAction(() => {
+        this.token = response.jwt;
+        this.user = new UserModel(response.user);
+        this.meta = Meta.success;
+      });
+      return true;
+    } catch (error) {
+      if (isCancelError(error)) {
         return false;
-      } finally {
-        runInAction(() => {
-          this._currentRegisterRequest = null;
-        });
       }
-    })();
-    return this._currentRegisterRequest;
+      runInAction(() => {
+        this.error = errorMessage(error);
+        this.meta = Meta.error;
+      });
+      return false;
+    } finally {
+      runInAction(() => {
+        this._registerAbortController = null;
+      });
+    }
   }
 
   /**

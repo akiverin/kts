@@ -1,20 +1,12 @@
-.timeInputs {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  gap: 1rem;
-
-  & div {
-    max-width: 160px;
-  }
+.time-input {
+  max-width: 180px;
+  min-width: 160px;
 }
 
-@media screen and (max-width: $breakpoint-xs) {
-  .timeInputs {
-    & > div {
-      max-width: calc(50% - 1rem);
-      width: 100%;
-      flex: 0 0 auto;
-    }
+@media screen and (max-width: $breakpoint-s) {
+  .time-input {
+    max-width: calc(50% - 1rem);
+    width: 100%;
+    flex: 0 0 auto;
   }
 }

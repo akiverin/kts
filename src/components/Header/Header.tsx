@@ -65,15 +65,15 @@ const Header: React.FC = observer(() => {
             <p className="visuallyHidden">Список сохраненных рецептов</p>
             <Favorite />
           </Link>
-          {!userStore.user ? (
-            <Link className={styles['header__icon-link']} to="/login">
-              <p className="visuallyHidden">Авторизация</p>
-              <Auth />
-            </Link>
-          ) : (
+          {userStore.user ? (
             <Link className={styles['header__icon-link']} to="/profile">
               <p className="visuallyHidden">Профиль</p>
               <Profile />
+            </Link>
+          ) : (
+            <Link className={styles['header__icon-link']} to="/login">
+              <p className="visuallyHidden">Авторизация</p>
+              <Auth />
             </Link>
           )}
         </div>

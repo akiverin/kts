@@ -12,7 +12,8 @@ import Pagination from 'components/Paganation';
 import timeIcon from 'assets/timeIcon.svg';
 import { FavoritesStore } from 'entities/recipe/stores/FavoritesStore';
 import { observer, useLocalObservable } from 'mobx-react-lite';
-import Summary from '../../../../components/Summary';
+import Summary from 'components/Summary';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   recipes: RecipeListStore['recipes'];
@@ -60,31 +61,40 @@ const FoodsListContent: React.FC<Props> = observer(({ recipes, meta, error, pagi
   return (
     <>
       <ul className={styles['foods-list__list']}>
-        {recipes.map((recipe: Recipe) => (
-          <li key={recipe.documentId} className={styles['foods-list__item']}>
-            <Link to={`/foods/${recipe.documentId}`}>
-              <Card
-                image={recipe.images[0].url || ''}
-                title={recipe.name}
-                subtitle={<Summary>{recipe.summary}</Summary>}
-                contentSlot={`${recipe.calories} kcal`}
-                actionSlot={
-                  <Button onClick={(event) => handleSaveClick(event, recipe)}>
-                    {getIsSaved(recipe.documentId) ? 'Remove' : 'Save'}
-                  </Button>
-                }
-                captionSlot={
-                  <div className={styles['foods-list__time']}>
-                    <img src={timeIcon} alt="icon time" />
-                    <Text color="secondary" weight="medium" view="p-14">
-                      {`${recipe.preparationTime} minutes`}
-                    </Text>
-                  </div>
-                }
-              />
-            </Link>
-          </li>
-        ))}
+        <AnimatePresence>
+          {recipes.map((recipe: Recipe) => (
+            <motion.li
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              key={recipe.documentId}
+              className={styles['foods-list__item']}
+            >
+              <Link to={`/foods/${recipe.documentId}`}>
+                <Card
+                  image={recipe.images[0].url || ''}
+                  title={recipe.name}
+                  subtitle={<Summary>{recipe.summary}</Summary>}
+                  contentSlot={`${recipe.calories} kcal`}
+                  actionSlot={
+                    <Button onClick={(event) => handleSaveClick(event, recipe)}>
+                      {getIsSaved(recipe.documentId) ? 'Remove' : 'Save'}
+                    </Button>
+                  }
+                  captionSlot={
+                    <div className={styles['foods-list__time']}>
+                      <img src={timeIcon} alt="icon time" />
+                      <Text color="secondary" weight="medium" view="p-14">
+                        {`${recipe.preparationTime} minutes`}
+                      </Text>
+                    </div>
+                  }
+                />
+              </Link>
+            </motion.li>
+          ))}
+        </AnimatePresence>
       </ul>
       <Pagination currentPage={pagination.page} totalPages={pagination.pageCount} onPageChange={onPageChange} />
     </>

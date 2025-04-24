@@ -44,15 +44,26 @@ const TimeInputs: React.FC<TimeInputsProps> = ({ totalTime, cookingTime, prepara
   };
 
   return (
-    <div className={styles.timeInputs}>
-      <Input placeholder="Total Time" value={localTotalTime} onChange={handleInputChange('totalTime')} />
-      <Input placeholder="Cooking Time" value={localCookingTime} onChange={handleInputChange('cookingTime')} />
+    <>
       <Input
+        className={styles['time-input']}
+        placeholder="Total Time"
+        value={localTotalTime}
+        onChange={handleInputChange('totalTime')}
+      />
+      <Input
+        className={styles['time-input']}
+        placeholder="Cooking Time"
+        value={localCookingTime}
+        onChange={handleInputChange('cookingTime')}
+      />
+      <Input
+        className={styles['time-input']}
         placeholder="Preparation Time"
         value={localPreparationTime}
         onChange={handleInputChange('preparationTime')}
       />
-    </div>
+    </>
   );
 };
 
